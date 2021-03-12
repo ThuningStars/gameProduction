@@ -8,9 +8,12 @@
 #include <SDL_mixer.h>
 #include <vector>
 
+
+
 #include "PlatformPlayer.h"
 #include "PlayerBullet.h"
 #include "Enemy.h"
+#include "Collectible.h"
 #define FPS 60
 #define WIDTH 1024
 #define HEIGHT 768
@@ -29,6 +32,9 @@ private: // private properties.
 	const Uint8* m_keystates;
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;		// FIRTS
+
+
+	
 	SDL_Rect m_Platforms[4] = {
 
 
@@ -100,14 +106,14 @@ private: // private properties.
 	vector<LeftBullet*> m_playerleftbullet;
 	SDL_Texture* m_playerIdleTexture, * m_playerRunTexture, * m_playerAttackTexture, * m_groundTexture, * m_obstacletexture;
 	SDL_Texture* m_yellowEnemyWalkTexture, * m_redEnemyWalkTexture, * m_yellowEenemyAttackTexture;
-	SDL_Texture* heartTexture, * m_pBGTexture;
+	SDL_Texture* heartTexture, * m_pBGTexture, *m_pCupTexture;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
 	vector<Enemy*> m_yellowEnemyCreation;
 	int m_EnemyTimer;
 
-	
+	Collectible* m_pCollectible;
 
 	// Textures
 	SDL_Texture* m_pTexture;
@@ -126,6 +132,7 @@ private: // private method prototypes.
 
 public: // public method prototypes.
 	int Run();
+
 };
 
 #endif
