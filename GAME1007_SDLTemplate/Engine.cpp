@@ -30,6 +30,7 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 					m_playerRunTexture = IMG_LoadTexture(m_pRenderer, "../assets/player/run.png");
 					m_playerAttackTexture = IMG_LoadTexture(m_pRenderer, "../assets/player/attack.png");
 					m_yellowEnemyWalkTexture = IMG_LoadTexture(m_pRenderer, "../assets/enemy/walking.png");
+					m_yellowEenemyAttackTexture = IMG_LoadTexture(m_pRenderer, "../assets/enemy/Attack.png");
 					m_redEnemyWalkTexture = IMG_LoadTexture(m_pRenderer, "../assets/enemy/red walking.png");
 					m_groundTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/ground.png");
 					heartTexture = IMG_LoadTexture(m_pRenderer, "../assets/HUD/heart.png");
@@ -109,9 +110,10 @@ void Engine::HandleEvents()
 				// Spawn a right bullet
 				m_playerbullet.push_back(new Bullet({ m_player.GetDstRect()->x + 60, m_player.GetDstRect()->y + 40 }));
 				m_playerbullet.shrink_to_fit();
+				cout << "New bullet vector capacity: " << m_playerbullet.capacity() << endl;
 				m_player.setAttack(true);
 			}
-				cout << "New bullet vector capacity: " << m_playerbullet.capacity() << endl;
+				
 			if (event.key.keysym.sym == SDLK_k  && m_start % 2 * 1 == 0)
 			{
 				// Spawn a left bullet
@@ -208,6 +210,7 @@ void Engine::CheckCollision()
 	//enemy - player collision
 	for (unsigned i = 0; i < m_yellowEnemyCreation.size(); i++)
 	{
+		
 		// Cooldown feature
 		if (coolDown > 0 && coolDown != 0)
 		{
@@ -221,6 +224,16 @@ void Engine::CheckCollision()
 			playerHealth--;
 			coolDown = 300;
 			cout << "You have " << playerHealth << " left" << endl << endl;
+
+			// set attack animation to true
+			m_yellowEnemyCreation[i]->SetAttack(true);
+			
+		}
+
+		if(coolDown == 0)
+		{
+			// set attack animation back to false
+			m_yellowEnemyCreation[i]->SetAttack(false);
 		}
 		
 	}
@@ -295,13 +308,23 @@ void Engine::Update()
 		// change animation to running
 
 	}
-
 	else if (KeyDown(SDL_SCANCODE_D))
 	{
 		m_player.SetAccelX(1.0);
 
 		// change animation to running
 		m_player.SetRunning(true);
+	}
+
+	if (KeyDown(SDL_SCANCODE_K))
+	{
+		// change animation to attack
+		m_player.setAttack(true);
+	}
+	else if (KeyDown(SDL_SCANCODE_L))
+	{
+		// change animation to attack
+		m_player.setAttack(true);
 	}
 	
 	//wrap the player
@@ -338,6 +361,7 @@ void Engine::Update()
 			}
 		}
 	}
+	
 	// Player respawns when health is 0 or below 0
 	if (playerHealth == 0 || playerHealth < 0)
 	{
@@ -416,10 +440,14 @@ void Engine::Render()
 	
 	for (unsigned i = 0; i < m_yellowEnemyCreation.size(); i++) // size() is actual filled numbers of elements
 	{
-		m_yellowEnemyCreation[i]->Render(m_pRenderer,m_yellowEnemyWalkTexture, m_yellowEnemy.m_src , flipEnemy);
+		if(m_yellowEnemyCreation[i]->GetAttack() == false)
+			m_yellowEnemyCreation[i]->Render(m_pRenderer,m_yellowEnemyWalkTexture, flipEnemy);
+		else
+			m_yellowEnemyCreation[i]->Render(m_pRenderer, m_yellowEenemyAttackTexture, flipEnemy);
 	}
-	if(m_player.getRunning() == false)
-	
+
+	// Render the player
+	if(m_player.getRunning() == false && m_player.getAttack() == false)
 	{
 		m_player.Render(m_playerIdleTexture, m_player, flip);
 	}
@@ -429,7 +457,6 @@ void Engine::Render()
 	}
 	else
 	{
-		//SDL_RenderCopyEx(m_pRenderer, m_playerRunTexture, m_player.GetSrcRect(), m_player.GetDstRect(), 0, NULL, flip);
 		m_player.Render(m_playerRunTexture, m_player, flip);
 	}
 
@@ -441,7 +468,7 @@ void Engine::Render()
 	{
 		flip = SDL_FLIP_HORIZONTAL;
 	}
-	if (KeyDown(SDL_SCANCODE_D))
+	if (KeyDown(SDL_SCANCODE_D) || KeyDown(SDL_SCANCODE_L))
 	{
 		flip = SDL_FLIP_NONE;
 	}
@@ -522,6 +549,16 @@ void Engine::Clean()
 	}
 	m_playerleftbullet.clear();
 	m_playerleftbullet.shrink_to_fit();
+	SDL_DestroyTexture(m_playerIdleTexture);
+	SDL_DestroyTexture(m_playerRunTexture);
+	SDL_DestroyTexture(m_playerAttackTexture);
+	SDL_DestroyTexture(m_yellowEnemyWalkTexture);
+	SDL_DestroyTexture(m_redEnemyWalkTexture);
+	SDL_DestroyTexture(m_groundTexture);
+	SDL_DestroyTexture(heartTexture);
+	SDL_DestroyTexture(m_pBGTexture);
+	SDL_DestroyTexture(m_obstacletexture);
+	SDL_DestroyTexture(m_yellowEenemyAttackTexture);
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
