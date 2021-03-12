@@ -42,7 +42,7 @@ void PlatformPlayer::Update()
 	m_accelerationX = m_accelerationY = 0.0;
 
 	// Player animation controller
-	if(m_running == false)
+	if(m_attack == false)
 	{
 		m_timer++;
 		if (FPS / m_timer == 6)
@@ -66,7 +66,7 @@ void PlatformPlayer::Update()
 		}
 
 
-		if (m_srcRect.x == 990)
+		if (m_srcRect.x == 792)
 			m_srcRect.x = 0;
 	}
 	

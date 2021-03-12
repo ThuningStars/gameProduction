@@ -10,6 +10,7 @@ Enemy::Enemy(int leftLimitX, int leftLimitY, int rightLimitX, int rightLimitY)
 	m_speed = -1;
 	cout << "Constructing Enemy " << m_leftX << " " << m_rightX << endl;
 
+	m_src = { 0,0,200,292 };
 
 	this->m_rect.w = 50;
 	this->m_rect.h = 73;
@@ -17,6 +18,7 @@ Enemy::Enemy(int leftLimitX, int leftLimitY, int rightLimitX, int rightLimitY)
 	this->m_rect.y = m_leftY - m_rect.h;
 
 	m_timer = 0;
+	m_attack = false;
 }
 
 Enemy::~Enemy()
@@ -38,6 +40,17 @@ void Enemy::Update()
 		m_flip = SDL_FLIP_NONE;
 	}
 	m_rect.x += m_speed;
+
+	// animation
+	m_timer++;
+	if (FPS / m_timer == 6)
+	{
+		m_timer = 0;
+		m_src.x += 200;
+	}
+
+	if (m_src.x == 1000)
+		m_src.x = 0;
 }
 void Enemy::Render(SDL_Renderer* rend)
 {
@@ -45,9 +58,9 @@ void Enemy::Render(SDL_Renderer* rend)
 	SDL_RenderFillRect(rend, &m_rect);
 }
 
-void Enemy::Render(SDL_Renderer* rend, SDL_Texture* texture, SDL_Rect src, SDL_RendererFlip flip)
+void Enemy::Render(SDL_Renderer* rend, SDL_Texture* texture, SDL_RendererFlip flip)
 {
-	SDL_RenderCopyEx(rend, texture, &src, &m_rect, m_angle, m_pCenter, m_flip);
+	SDL_RenderCopyEx(rend, texture, &m_src, &m_rect, m_angle, m_pCenter, m_flip);
 }
 
 

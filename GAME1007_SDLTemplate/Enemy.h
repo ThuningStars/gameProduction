@@ -28,8 +28,9 @@ public:
 	SDL_Rect* GetRect();// Source rectangle
 	void Update();
 	void Render(SDL_Renderer* rend);
-	void Render(SDL_Renderer* rend, SDL_Texture* texture, SDL_Rect src, SDL_RendererFlip flip);
-
+	void Render(SDL_Renderer* rend, SDL_Texture* texture, SDL_RendererFlip flip);
+	bool GetAttack() { return m_attack; }
+	void SetAttack(bool a) { m_attack = a; }
 };
 
 
