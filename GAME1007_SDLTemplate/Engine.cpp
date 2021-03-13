@@ -36,6 +36,7 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 					heartTexture = IMG_LoadTexture(m_pRenderer, "../assets/HUD/heart.png");
 					m_pBGTexture = IMG_LoadTexture(m_pRenderer, "../assets/background/clouds.png");
 					m_obstacletexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/Wood.png");
+					m_pCupTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/cup.png");
 					cout << "Fourth pass." << endl;
 
 					if (Mix_Init(MIX_INIT_MP3) != 0) // Mixer init success.
@@ -60,7 +61,7 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	else return false; // initalization failed.
 	m_fps = (Uint32)round(1.0 / (double)FPS * 1000); // Converts FPS into milliseconds, e.g. 16.67
 	m_keystates = SDL_GetKeyboardState(nullptr);
-	m_bg1.m_src =  { 0,0,1024,768 };
+	m_bg1.m_src = { 0,0,1024,768 };
 	m_bg1.m_dst = { 0,0,1024,768 };
 	int x = 0;
 	for (auto element : m_Platforms)
@@ -71,11 +72,13 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 
 	}
 	m_player.Init(m_pRenderer);
-	m_yellowEnemy.m_src = {0,0,200,292};
+	m_yellowEnemy.m_src = { 0,0,200,292 };
 	cout << "Initialization successful!" << endl;
 	Mix_PlayMusic(m_pMusic, -1); // Play. -1 = looping.
 	Mix_VolumeMusic(50); // 0-MIX_MAX_VOLUME (128).
 	m_running = true;
+
+	m_pCollectible = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, {660, 300, 30, 30});
 	
 	return true;
 }
@@ -300,6 +303,7 @@ void Engine::CheckCollision()
 
 void Engine::Update()
 {
+	m_pCollectible->Update();
 	//move right and left
 	if (KeyDown(SDL_SCANCODE_A))
 	{
@@ -403,11 +407,16 @@ void Engine::Update()
 				break;
 			}
 		}
+
+	if(SDL_HasIntersection(m_player.GetDstRect(),m_pCollectible->getDest()))
+	{
+		m_pCollectible->setIsCollected(true);
+	}
 }
 
 void Engine::Render()
 {
-
+	
 
 	SDL_SetRenderDrawColor(m_pRenderer, 64, 128, 255, 255);
 	SDL_RenderClear(m_pRenderer);
@@ -460,7 +469,7 @@ void Engine::Render()
 		m_player.Render(m_playerRunTexture, m_player, flip);
 	}
 
-	
+	m_pCollectible->Render();
 
 	//SDL_RenderSetViewport(m_pRenderer, &m_Camera);
 	// flip the sprites face to another side
