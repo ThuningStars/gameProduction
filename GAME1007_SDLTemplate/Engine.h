@@ -9,11 +9,10 @@
 #include <vector>
 
 
-
+#include "Collectible.h"
 #include "PlatformPlayer.h"
 #include "PlayerBullet.h"
 #include "Enemy.h"
-#include "Collectible.h"
 #define FPS 60
 #define WIDTH 1024
 #define HEIGHT 768
@@ -26,15 +25,13 @@ using namespace std;
 class Engine
 {
 private: // private properties.
-	bool m_running = false;
-	Uint32 m_start, m_end, m_delta, m_fps, score = 0;
+	bool m_running = false, pPressed = false, enterPressed = false;
+	Uint32 m_start, m_end, m_delta, m_fps, score = 0, gameState = 0;
+	// gameState 0 = title state, 1 = gameplay state, 2 = game paused state, 3 = win state, 4 = game over state
 	string scoreString;
 	const Uint8* m_keystates;
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;		// FIRTS
-
-
-	
 	SDL_Rect m_Platforms[4] = {
 
 
@@ -106,7 +103,7 @@ private: // private properties.
 	vector<LeftBullet*> m_playerleftbullet;
 	SDL_Texture* m_playerIdleTexture, * m_playerRunTexture, * m_playerAttackTexture, * m_groundTexture, * m_obstacletexture;
 	SDL_Texture* m_yellowEnemyWalkTexture, * m_redEnemyWalkTexture, * m_yellowEenemyAttackTexture;
-	SDL_Texture* heartTexture, * m_pBGTexture, *m_pCupTexture;
+	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
@@ -132,7 +129,6 @@ private: // private method prototypes.
 
 public: // public method prototypes.
 	int Run();
-
 };
 
 #endif
