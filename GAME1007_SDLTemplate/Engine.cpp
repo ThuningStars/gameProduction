@@ -672,6 +672,10 @@ void Engine::Clean()
 	SDL_DestroyTexture(m_pBGTexture);
 	SDL_DestroyTexture(m_obstacletexture);
 	SDL_DestroyTexture(m_yellowEenemyAttackTexture);
+	SDL_DestroyTexture(m_pCupTexture);
+	SDL_DestroyTexture(m_titleScreen);
+	SDL_DestroyTexture(m_gameOverScreen);
+	SDL_DestroyTexture(m_winScreen);
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
