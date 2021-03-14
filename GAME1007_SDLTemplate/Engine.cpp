@@ -27,6 +27,7 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 				cout << "Third pass." << endl;
 				if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != 0)
 				{
+					m_playerBullet = IMG_LoadTexture(m_pRenderer, "../assets/textures/PlayerBullet.png");
 					m_playerIdleTexture = IMG_LoadTexture(m_pRenderer, "../assets/player/idle.png");
 					m_playerRunTexture = IMG_LoadTexture(m_pRenderer, "../assets/player/run.png");
 					m_playerAttackTexture = IMG_LoadTexture(m_pRenderer, "../assets/player/attack.png");
@@ -154,7 +155,7 @@ void Engine::HandleEvents()
 				if (event.key.keysym.sym == SDLK_l && m_start % 3 * 1 == 0)
 				{
 					// Spawn a right bullet
-					m_playerbullet.push_back(new Bullet({ m_player.GetDstRect()->x + 60, m_player.GetDstRect()->y + 40 }));
+					m_playerbullet.push_back(new Bullet({ m_player.GetDstRect()->x + 60, m_player.GetDstRect()->y + 20 }));
 					m_playerbullet.shrink_to_fit();
 					cout << "New bullet vector capacity: " << m_playerbullet.capacity() << endl;
 					m_player.setAttack(true);
@@ -166,7 +167,7 @@ void Engine::HandleEvents()
 				if (event.key.keysym.sym == SDLK_k && m_start % 3 * 1 == 0)
 				{
 					// Spawn a left bullet
-					m_playerleftbullet.push_back(new LeftBullet({ m_player.GetDstRect()->x + 0, m_player.GetDstRect()->y + 40 }));
+					m_playerleftbullet.push_back(new LeftBullet({ m_player.GetDstRect()->x + 0, m_player.GetDstRect()->y + 20 }));
 					m_playerleftbullet.shrink_to_fit();
 					cout << "New bullet vector capacity: " << m_playerleftbullet.capacity() << endl;
 					m_player.setAttack(true);
@@ -659,11 +660,10 @@ void Engine::Render()
 		}
 		//Render Right bullet
 		for (int i = 0; i < m_playerbullet.size(); i++)
-			m_playerbullet[i]->Render(m_pRenderer);
-		
+			SDL_RenderCopy(m_pRenderer, m_playerBullet, m_playerbullet[i]->GetSrc(), m_playerbullet[i]->GetDst());
 		//Render Left bullet
 		for (int i = 0; i < m_playerleftbullet.size(); i++)
-			m_playerleftbullet[i]->Render(m_pRenderer);
+			SDL_RenderCopyEx(m_pRenderer, m_playerBullet, m_playerleftbullet[i]->GetSrc(), m_playerleftbullet[i]->GetDst(), 0, 0, SDL_FLIP_HORIZONTAL);
 
 		//Render Enemy
 		for (unsigned i = 0; i < m_yellowEnemyCreation.size(); i++) // size() is actual filled numbers of elements
