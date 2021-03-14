@@ -95,7 +95,7 @@ private: // private properties.
 	//size of the ground texture for rendering
 	SDL_Rect textureSrc = { 0, 0, 225, 225 }; //NOT CURRENTLY USING THIS VARIABLE
 
-	Mix_Music* m_pMusic;
+	Mix_Music* m_pMusic, * m_pMenuMusic;
 	Mix_Chunk* m_pBullet, *m_pCheer, *m_pGameOver, *m_pJump, *m_pEnemy, *m_pWin;
 	vector<Mix_Chunk*> m_vSounds;
 	//SDL_Rect m_Camera = { 100, 0, WIDTH, HEIGHT };

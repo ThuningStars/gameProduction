@@ -53,6 +53,10 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 						m_pMusic = Mix_LoadMUS("../assets/Aud/limbo.mp3"); // Load the music track.
 						if (m_pMusic == nullptr)
 							cout << Mix_GetError() << endl;
+
+						m_pMenuMusic = Mix_LoadMUS("../assets/sound/bensound-newdawn.mp3");
+						if (m_pMenuMusic == nullptr)
+							cout << Mix_GetError() << endl;
 						
 						m_pBullet = Mix_LoadWAV("../assets/Aud/bullet_sfx.wav");
 						if (m_pBullet == nullptr)
@@ -106,10 +110,10 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	m_yellowEnemy.m_src = { 0,0,200,292 };
 	cout << "Initialization successful!" << endl;
 	
-	Mix_PlayMusic(m_pMusic, -1);
-	Mix_VolumeMusic(50); // 0-MIX_MAX_VOLUME (128).
-	
 	m_running = true;
+
+	Mix_PlayMusic(m_pMenuMusic, -1);
+	Mix_VolumeMusic(50);
 
 	//Item
 	m_pCollectible = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
@@ -560,11 +564,13 @@ void Engine::Update()
 	//On the title screen if the player pressese enter, it starts the game
 	if (gameState == 0)
 	{
-		Mix_PauseMusic();
+		//Mix_PauseMusic();
 		if (KeyDown(SDL_SCANCODE_RETURN) && enterPressed == false)
 		{
+			Mix_PauseMusic();
 			gameState = 1;
-
+			Mix_PlayMusic(m_pMusic, -1);
+			Mix_VolumeMusic(50); // 0-MIX_MAX_VOLUME (128).
 			//deletes all enemies and recreate them
 			m_yellowEnemyCreation.clear();
 			m_yellowEnemyCreation.shrink_to_fit();
@@ -600,8 +606,11 @@ void Engine::Update()
 	{
 		if (KeyDown(SDL_SCANCODE_RETURN) && enterPressed == false)
 		{
+			Mix_PlayMusic(m_pMenuMusic, -1);
+			Mix_VolumeMusic(50);
 			gameState = 0;
 			enterPressed = true;
+
 		}
 	}
 
