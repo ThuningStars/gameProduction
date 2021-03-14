@@ -53,87 +53,61 @@ public:
 class Bullet : public Sprite
 {
 private:
-	SDL_Rect m_dst; // Source rectangle
-	SDL_Rect m_rect; //SDL_Rect m_dst = {0,0,16,16};
 public:
 
 	Bullet(SDL_Point spawnLoc = { 512, 384 })
 	{
-		cout << "Constructing Bullet at " << &(*this) << endl;
-		this->m_rect.x = spawnLoc.x;
-		this->m_rect.y = spawnLoc.y - 20;
-		this->m_rect.w = 8;
-		this->m_rect.h = 8;
-
+		m_src = { 0,0,32,32 };
+		this->m_dst.x = spawnLoc.x; // this-> is optional.
+		this->m_dst.y = spawnLoc.y; // this-> is optional.
+		this->m_dst.w = 8;
+		this->m_dst.h = 8;
 	}
-	~Bullet()
+	~Bullet() // Destructor.
 	{
-		cout << "De-allocating Bullet at " << &(*this) << endl;
+		/*cout << "De-allocating Bullet at " << &(*this) << endl;*/
 	}
-
 	void SetLoc(SDL_Point newloc)
 	{
-		m_rect.x = newloc.x;
-		m_rect.y = newloc.y;
+		m_dst.x = newloc.x;
+		m_dst.y = newloc.y;
 	}
-
+	SDL_Rect* GetRekt() { return &m_dst; }
 	void Update()
 	{
-		this->m_rect.x += 5;
+		m_dst.x += 5; // Move the bullet "to the side" 7 pixels every frame.
 	}
-
-	void Render(SDL_Renderer* rend)
-	{
-		SDL_SetRenderDrawColor(rend, 0, 0, 255, 255);
-		SDL_RenderFillRect(rend, &m_rect);
-
-	}
-
-	SDL_Rect* GetRekt() { return &m_rect; }; // Source rectangle
-
 
 };
 
 class LeftBullet : public Sprite
 {
 private:
-	SDL_Rect m_dst; // Source rectangle
-	SDL_Rect m_rect; //SDL_Rect m_dst = {0,0,16,16};
 public:
 
 	LeftBullet(SDL_Point spawnLoc = { 512, 384 })
 	{
-		cout << "Constructing Bullet at " << &(*this) << endl;
-		this->m_rect.x = spawnLoc.x;
-		this->m_rect.y = spawnLoc.y -20;
-		this->m_rect.w = 8;
-		this->m_rect.h = 8;
-
+		m_src = { 0,0,32,32 };
+		this->m_dst.x = spawnLoc.x; // this-> is optional.
+		this->m_dst.y = spawnLoc.y; // this-> is optional.
+		this->m_dst.w = 8;
+		this->m_dst.h = 8;
 	}
-	~LeftBullet()
+	~LeftBullet() // Destructor.
 	{
-		cout << "De-allocating Bullet at " << &(*this) << endl;
+		/*cout << "De-allocating Bullet at " << &(*this) << endl;*/
 	}
-
 	void SetLoc(SDL_Point newloc)
 	{
-		m_rect.x = newloc.x;
-		m_rect.y = newloc.y;
+		m_dst.x = newloc.x;
+		m_dst.y = newloc.y;
 	}
-
+	SDL_Rect* GetRekt() { return &m_dst; }
 	void Update()
 	{
-		this->m_rect.x -= 5;
+		m_dst.x -= 5; // Move the bullet "to the side" 7 pixels every frame.
 	}
 
-	void Render(SDL_Renderer* rend)
-	{
-		SDL_SetRenderDrawColor(rend, 0, 0, 255, 255);
-		SDL_RenderFillRect(rend, &m_rect);
-
-	}
-
-	SDL_Rect* GetRekt() { return &m_rect; }; // Source rectangle
 
 
 };
