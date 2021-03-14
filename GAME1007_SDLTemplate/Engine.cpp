@@ -72,11 +72,7 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 						
 						m_pEnemy = Mix_LoadWAV("../assets/Aud/monster_sfx.wav");
 						if (m_pEnemy == nullptr)
-							cout << Mix_GetError() << endl;
-
-						m_pGameOver = Mix_LoadWAV("../assets/Aud/gameover_sfx2.wav");
-						if (m_pGameOver == nullptr)
-							cout << Mix_GetError() << endl;
+							cout << Mix_GetError() << endl; 
 
 						m_pWin = Mix_LoadWAV("../assets/Aud/win_sfx.wav");
 						if (m_pWin == nullptr)
@@ -791,6 +787,13 @@ void Engine::Clean()
 	SDL_DestroyTexture(m_titleScreen);
 	SDL_DestroyTexture(m_gameOverScreen);
 	SDL_DestroyTexture(m_winScreen);
+	Mix_FreeChunk(m_pWin);
+	Mix_FreeChunk(m_pWin);
+	Mix_FreeChunk(m_pBullet);
+	Mix_FreeChunk(m_pCheer);
+	Mix_FreeChunk(m_pEnemy);
+	Mix_FreeChunk(m_pGameOver);
+	Mix_FreeMusic(m_pMusic);
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
