@@ -296,24 +296,24 @@ void Engine::CheckCollision()
 	}
 
 	//Player right bullet - collision to enemy
-	for (unsigned i = 0; i < m_playerbullet.size(); i++)
+	for (unsigned i = 0; i < m_yellowEnemyCreation.size(); i++)
 	{
-		for (unsigned a = 0; a < m_yellowEnemyCreation.size(); a++)
-			if (SDL_HasIntersection(m_playerbullet[i]->GetRekt(), m_yellowEnemyCreation[a]->GetRect()))
+		for (unsigned a = 0; a < m_playerbullet.size(); a++)
+			if (SDL_HasIntersection(m_playerbullet[a]->GetRekt(), m_yellowEnemyCreation[i]->GetRect()))
 			{
 				Mix_VolumeChunk(m_pEnemy, 20);
 				Mix_PlayChannel(-1, m_pEnemy, 0);
 				cout << "Player bullet Collision!" << endl;
 
-				delete m_playerbullet[i]; // flag for reallocation
-				m_playerbullet[i] = nullptr; // get rid of the dangling pointer
-				m_playerbullet.erase(m_playerbullet.begin() + i);
+				delete m_playerbullet[a]; // flag for reallocation
+				m_playerbullet[a] = nullptr; // get rid of the dangling pointer
+				m_playerbullet.erase(m_playerbullet.begin() + a);
 				m_playerbullet.shrink_to_fit();
 				cout << " Bullet Deleted \n";
 
-				delete m_yellowEnemyCreation[a]; // flag for reallocation
-				m_yellowEnemyCreation[a] = nullptr; // get rid of the dangling pointer
-				m_yellowEnemyCreation.erase(m_yellowEnemyCreation.begin() + a);
+				delete m_yellowEnemyCreation[i]; // flag for reallocation
+				m_yellowEnemyCreation[i] = nullptr; // get rid of the dangling pointer
+				m_yellowEnemyCreation.erase(m_yellowEnemyCreation.begin() + i);
 				m_yellowEnemyCreation.shrink_to_fit();
 				cout << " Enemy Deleted \n";
 
@@ -321,24 +321,24 @@ void Engine::CheckCollision()
 	}
 
 	//Player left bullet - collision to enemy
-	for (unsigned i = 0; i < m_playerleftbullet.size(); i++)
+	for (unsigned i = 0; i < m_yellowEnemyCreation.size(); i++)
 	{
-		for (unsigned a = 0; a < m_yellowEnemyCreation.size(); a++)
-			if (SDL_HasIntersection(m_playerleftbullet[i]->GetRekt(), m_yellowEnemyCreation[a]->GetRect()))
+		for (unsigned a = 0; a < m_playerleftbullet.size(); a++)
+			if (SDL_HasIntersection(m_playerleftbullet[a]->GetRekt(), m_yellowEnemyCreation[i]->GetRect()))
 			{
 				Mix_VolumeChunk(m_pEnemy, 20);
 				Mix_PlayChannel(-1, m_pEnemy, 0);
 				cout << "Player bullet Collision!" << endl;
 
-				delete m_playerleftbullet[i]; // flag for reallocation
-				m_playerleftbullet[i] = nullptr; // get rid of the dangling pointer
-				m_playerleftbullet.erase(m_playerleftbullet.begin() + i);
+				delete m_playerleftbullet[a]; // flag for reallocation
+				m_playerleftbullet[a] = nullptr; // get rid of the dangling pointer
+				m_playerleftbullet.erase(m_playerleftbullet.begin() + a);
 				m_playerleftbullet.shrink_to_fit();
 				cout << " Bullet Deleted \n";
 
-				delete m_yellowEnemyCreation[a]; // flag for reallocation
-				m_yellowEnemyCreation[a] = nullptr; // get rid of the dangling pointer
-				m_yellowEnemyCreation.erase(m_yellowEnemyCreation.begin() + a);
+				delete m_yellowEnemyCreation[i]; // flag for reallocation
+				m_yellowEnemyCreation[i] = nullptr; // get rid of the dangling pointer
+				m_yellowEnemyCreation.erase(m_yellowEnemyCreation.begin() + i);
 				m_yellowEnemyCreation.shrink_to_fit();
 				cout << " Enemy Deleted \n";
 
