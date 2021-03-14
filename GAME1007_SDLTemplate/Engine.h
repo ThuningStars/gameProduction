@@ -96,6 +96,7 @@ private: // private properties.
 	SDL_Rect textureSrc = { 0, 0, 225, 225 }; //NOT CURRENTLY USING THIS VARIABLE
 
 	Mix_Music* m_pMusic;
+	Mix_Chunk* m_pBullet, *m_pCheer, *m_pGameOver, *m_pJump, *m_pEnemy, *m_pWin;
 	vector<Mix_Chunk*> m_vSounds;
 	//SDL_Rect m_Camera = { 100, 0, WIDTH, HEIGHT };
 	PlatformPlayer m_player;
@@ -103,14 +104,14 @@ private: // private properties.
 	vector<LeftBullet*> m_playerleftbullet;
 	SDL_Texture* m_playerIdleTexture, * m_playerRunTexture, * m_playerAttackTexture, * m_groundTexture, * m_obstacletexture;
 	SDL_Texture* m_yellowEnemyWalkTexture, * m_redEnemyWalkTexture, * m_yellowEenemyAttackTexture;
-	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture;
+	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture, * m_pgoal;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
 	vector<Enemy*> m_yellowEnemyCreation;
 	int m_EnemyTimer;
 
-	Collectible* m_pCollectible;
+	Collectible* m_pCollectible, *m_pGoal;
 
 	// Textures
 	SDL_Texture* m_pTexture;
