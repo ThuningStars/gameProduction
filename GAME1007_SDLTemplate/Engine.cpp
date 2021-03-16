@@ -141,40 +141,16 @@ void Engine::HandleEvents()
 		case SDL_KEYDOWN:
 			if (gameState == 1) //checks if the game is in play mode
 			{
-
 				if (event.key.keysym.sym == ' ' && m_player.isGrounded())
 				{
-					m_player.SetAccelY(-JUMPFORCE);
-					m_player.SetGrounded(false);
+						m_player.SetAccelY(-JUMPFORCE);
+						m_player.SetGrounded(false);
 
-					// change animation to running
-					m_player.SetRunning(true);
-					Mix_VolumeChunk(m_pJump, 3);
-					Mix_PlayChannel(-1, m_pJump, 0);
-				}
-				if (event.key.keysym.sym == SDLK_l && m_start % 3 * 1 == 0)
-				{
-					// Spawn a right bullet
-					m_playerbullet.push_back(new Bullet({ m_player.GetDstRect()->x + 60, m_player.GetDstRect()->y + 20 }));
-					m_playerbullet.shrink_to_fit();
-					cout << "New bullet vector capacity: " << m_playerbullet.capacity() << endl;
-					m_player.setAttack(true);
-					Mix_VolumeChunk(m_pBullet, 15);
-					Mix_PlayChannel(-1, m_pBullet, 0);
-					
-				}
-
-				if (event.key.keysym.sym == SDLK_k && m_start % 3 * 1 == 0)
-				{
-					// Spawn a left bullet
-					m_playerleftbullet.push_back(new LeftBullet({ m_player.GetDstRect()->x + 0, m_player.GetDstRect()->y + 20 }));
-					m_playerleftbullet.shrink_to_fit();
-					cout << "New bullet vector capacity: " << m_playerleftbullet.capacity() << endl;
-					m_player.setAttack(true);
-					Mix_VolumeChunk(m_pBullet, 15);
-					Mix_PlayChannel(-1, m_pBullet, 0);
-				}
-				
+						// change animation to running
+						m_player.SetRunning(true);
+						Mix_VolumeChunk(m_pJump, 3);
+						Mix_PlayChannel(-1, m_pJump, 0);
+				}		
 			}
 
 
@@ -452,11 +428,29 @@ void Engine::Update()
 		{
 			// change animation to attack
 			m_player.setAttack(true);
+			if (m_shottimer == 0) {
+				m_shottimer = 30;
+				m_playerleftbullet.push_back(new LeftBullet({ m_player.GetDstRect()->x + 0, m_player.GetDstRect()->y + 20 }));
+				m_playerleftbullet.shrink_to_fit();
+				cout << "New bullet vector capacity: " << m_playerleftbullet.capacity() << endl;
+				m_player.setAttack(true);
+				Mix_VolumeChunk(m_pBullet, 15);
+				Mix_PlayChannel(-1, m_pBullet, 0);
+			}
 		}
 		else if (KeyDown(SDL_SCANCODE_L))
 		{
 			// change animation to attack
 			m_player.setAttack(true);
+			if (m_shottimer == 0) {
+				m_shottimer = 30;
+				m_playerbullet.push_back(new Bullet({ m_player.GetDstRect()->x + 60, m_player.GetDstRect()->y + 20 }));
+				m_playerbullet.shrink_to_fit();
+				cout << "New bullet vector capacity: " << m_playerbullet.capacity() << endl;
+				m_player.setAttack(true);
+				Mix_VolumeChunk(m_pBullet, 15);
+				Mix_PlayChannel(-1, m_pBullet, 0);
+			}
 		}
 
 		//wrap the player
@@ -502,7 +496,7 @@ void Engine::Update()
 
 		//cout << m_player.GetDstRect()->x << endl<<m_Camera.x<<endl;
 
-
+		if (m_shottimer != 0) m_shottimer--;
 		for (int i = 0; i < m_playerbullet.size(); i++)
 			m_playerbullet[i]->Update();
 
