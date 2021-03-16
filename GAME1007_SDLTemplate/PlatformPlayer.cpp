@@ -11,7 +11,7 @@ void PlatformPlayer::Init(SDL_Renderer* r)
 	m_grounded = true;
 
 	m_accelerationX = m_accelerationY = m_velX = m_velY = 0.0;
-	m_maxVelX = 15.0;
+	m_maxVelX = 5.0;
 	m_maxVelY = JUMPFORCE;
 	m_gravity = GRAVITY;
 	m_drag = 0.80;

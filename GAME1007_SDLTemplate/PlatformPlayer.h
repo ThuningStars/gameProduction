@@ -1,8 +1,8 @@
 #pragma once
 #ifndef _PLATFORMPLAYER_H_
 #define _PLATFORMPLAYER_H_
-#define GRAVITY 5
-#define JUMPFORCE 40
+#define GRAVITY 4
+#define JUMPFORCE 45
 #include "SDL.h"
 
 
