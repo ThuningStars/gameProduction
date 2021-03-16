@@ -199,11 +199,12 @@ bool Engine::KeyDown(const SDL_Scancode c)
 
 void Engine::CheckCollision()
 {
-	collided = false;
+	//collided = false;
+	m_player.SetGrounded(false);
 	//I edited this section to work no matter how many platforms there are, @ Ryan on discord if it's confusing
 	for (SDL_Rect x : m_Platforms)
 	{
-		if (SDL_HasIntersection(m_player.GetDstRect(), &x) && !collided)
+		if (SDL_HasIntersection(m_player.GetDstRect(), &x))
 		{
 			if ((m_player.GetDstRect()->y + m_player.GetDstRect()->h) - (float)m_player.GetVelY() <= x.y && !collided)
 			{
@@ -211,28 +212,24 @@ void Engine::CheckCollision()
 				m_player.SetGrounded(true);
 				m_player.StopY();
 				m_player.SetY(x.y - m_player.GetDstRect()->h);
-				collided = true;
 			}
 			else if (m_player.GetDstRect()->y - (float)m_player.GetVelY() >= (x.y + x.h) && !collided)
 			{
 				//colliding with the bottom side of platforms.
 				m_player.StopY();
 				m_player.SetY(x.y + x.h);
-				collided = true;
 			}
 			else if ((m_player.GetDstRect()->x + m_player.GetDstRect()->w) - (float)m_player.GetVelX() <= x.x && !collided)
 			{
 				//colliding with the left side of platforms.
 				m_player.StopX();
-				m_player.SetX(x.x - x.w);
-				collided = true;
+				m_player.SetX(x.x - m_player.GetDstRect()->w);
 			}
 			else if (m_player.GetDstRect()->x - (float)m_player.GetVelX() >= (x.x + x.w) && !collided)
 			{
 				//colliding with the right side of platforms.
 				m_player.StopX();
 				m_player.SetX(x.x + x.w);
-				collided = true;
 			}
 
 		}
@@ -258,7 +255,7 @@ void Engine::CheckCollision()
 			{
 				//colliding with the left side of platforms.
 				m_player.StopX();
-				m_player.SetX(x.x - x.w);
+				m_player.SetX(x.x - m_player.GetDstRect()->w);
 			}
 			else if (m_player.GetDstRect()->x - (float)m_player.GetVelX() >= (x.x + x.w) && !collided)
 			{
