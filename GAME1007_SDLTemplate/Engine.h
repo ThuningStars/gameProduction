@@ -27,6 +27,7 @@ class Engine
 private: // private properties.
 	bool m_running = false, pPressed = false, enterPressed = false, collided = false;
 	Uint32 m_start, m_end, m_delta, m_fps, score = 0, gameState = 0;
+	int m_shottimer = 0;
 	// gameState 0 = title state, 1 = gameplay state, 2 = game paused state, 3 = win state, 4 = game over state
 	string scoreString;
 	const Uint8* m_keystates;
