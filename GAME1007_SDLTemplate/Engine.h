@@ -93,6 +93,8 @@ private: // private properties.
 //GOAL
 						{940,100,120,20},// goal
 	};
+	SDL_Rect m_signOne = { 422,600,35,50 }; //the level one sign position
+	SDL_Rect m_levelOneTextPosition = { 300,300,400,250 }; //the text that appears when you're near the level one sign
 	//size of the ground texture for rendering
 	SDL_Rect textureSrc = { 0, 0, 225, 225 }; //NOT CURRENTLY USING THIS VARIABLE
 
@@ -105,7 +107,7 @@ private: // private properties.
 	vector<LeftBullet*> m_playerleftbullet;
 	SDL_Texture* m_playerIdleTexture, * m_playerRunTexture, * m_playerAttackTexture, * m_groundTexture, * m_obstacletexture;
 	SDL_Texture* m_yellowEnemyWalkTexture, * m_redEnemyWalkTexture, * m_yellowEenemyAttackTexture, * m_playerBullet;
-	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture, * m_pgoal;
+	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture, * m_pgoal, *m_signTexture, *m_levelOneText;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;

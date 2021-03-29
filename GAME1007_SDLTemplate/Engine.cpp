@@ -43,6 +43,8 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 					m_titleScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/titlescreen.png");
 					m_gameOverScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/gameOverScreen.png");
 					m_winScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/winScreen.png");
+					m_signTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/sign.png");
+					m_levelOneText = IMG_LoadTexture(m_pRenderer, "../assets/textures/level1Sign.png");
 
 					cout << "Fourth pass." << endl;
 
@@ -387,6 +389,8 @@ void Engine::CheckCollision()
 		}
 	}
 
+	
+
 	//Here's the logic for checking if the player fell off the edge
 	if (m_player.GetDstRect()->y > 1000)
 	{
@@ -713,6 +717,13 @@ void Engine::Render()
 		{
 			SDL_RenderCopy(m_pRenderer, heartTexture, NULL, &heartRenderPosition);
 			heartRenderPosition.x += 64;
+		}
+		//sign rendering
+		SDL_RenderCopy(m_pRenderer, m_signTexture, NULL, &m_signOne);
+		//code for reading the sign
+		if (SDL_HasIntersection(m_player.GetDstRect(), &m_signOne))
+		{
+			SDL_RenderCopy(m_pRenderer, m_levelOneText, NULL, &m_levelOneTextPosition);
 		}
 	}
 	SDL_RenderPresent(m_pRenderer); // Flip buffers - send data to window.
