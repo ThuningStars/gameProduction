@@ -37,7 +37,7 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 					m_groundTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/ground.png");
 					heartTexture = IMG_LoadTexture(m_pRenderer, "../assets/HUD/heart.png");
 					m_pBGTexture = IMG_LoadTexture(m_pRenderer, "../assets/background/clouds.png");
-					m_obstacletexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/Wood.png");
+					m_obstacletexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/Woodsmall.png");
 					m_pCupTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/cup.png");
 					m_pgoal = IMG_LoadTexture(m_pRenderer, "../assets/textures/goal_texture2.png");
 					m_titleScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/titlescreen.png");
@@ -654,14 +654,18 @@ void Engine::Render()
 		//Render Platforms
 		for (SDL_Rect x : m_Platforms)
 		{
+
 			SDL_RenderFillRect(m_pRenderer, &x);
-			SDL_RenderCopy(m_pRenderer, m_groundTexture, NULL, &x);
+			//SDL_RenderCopy(m_pRenderer, m_groundTexture, NULL, &x); OLD render code(stretches)
+			//this should help with stretching
+			SDL_RenderCopyEx(m_pRenderer, m_groundTexture, new SDL_Rect {0, 0, x.w, x.h}, &x, NULL, NULL, SDL_FLIP_NONE);
 		}
 		//Render Obstacles
 		for (SDL_Rect x : m_Obstacles)
 		{
 			SDL_RenderFillRect(m_pRenderer, &x);
-			SDL_RenderCopy(m_pRenderer, m_obstacletexture, NULL, &x);
+			//SDL_RenderCopy(m_pRenderer, m_obstacletexture, NULL, &x);
+			SDL_RenderCopyEx(m_pRenderer, m_obstacletexture, new SDL_Rect{ 0, 0, x.w, x.h }, &x, NULL, NULL, SDL_FLIP_NONE);
 		}
 		//Render Right bullet
 		for (int i = 0; i < m_playerbullet.size(); i++)
