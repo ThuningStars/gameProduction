@@ -33,7 +33,8 @@ private: // private properties.
 	const Uint8* m_keystates;
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;		// FIRTS
-	SDL_Rect m_Platforms[4] = {
+	SDL_Rect m_Platforms[4];
+	SDL_Rect m_PlatformsLevelOne[4] = {
 
 
 
@@ -58,7 +59,8 @@ private: // private properties.
 
 
 	}; //Position X and y, width and height
-	SDL_Rect m_Obstacles[20]
+	SDL_Rect m_Obstacles[20];
+	SDL_Rect m_ObstaclesLevelOne[20]
 	{
 		//First
 	 {0,570,170,20},////first jump ground + enemies
@@ -111,10 +113,11 @@ private: // private properties.
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
-	vector<Enemy*> m_yellowEnemyCreation;
-	int m_EnemyTimer;
+	vector<Enemy*> m_yellowEnemyCreation, m_yellowEnemyLevelOne;
+	int m_EnemyTimer, currentLevel, levelOneSpawnX = 462, levelOneSpawnY = 600; 
+	// currentLevel is the level currently being played
 
-	Collectible* m_pCollectible, *m_pGoal;
+	Collectible* m_pCollectible, *m_pGoal, *m_pGoalLevelOne, *m_pCollectibleLevelOne;
 
 	// Textures
 	SDL_Texture* m_pTexture;
@@ -130,6 +133,7 @@ private: // private method prototypes.
 	void Update();
 	void Render();
 	void Sleep();
+	void LevelInitialize(int level);
 
 public: // public method prototypes.
 	int Run();

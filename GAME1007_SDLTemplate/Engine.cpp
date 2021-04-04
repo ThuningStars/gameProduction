@@ -118,8 +118,8 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	Mix_VolumeMusic(50);
 
 	//Item
-	m_pCollectible = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
-	m_pGoal = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 940, 50, 75,50  });
+	m_pCollectibleLevelOne = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
+	m_pGoalLevelOne = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 940, 50, 75,50  });
 	
 	return true;
 }
@@ -649,7 +649,7 @@ void Engine::Render()
 	{
 		SDL_RenderCopy(m_pRenderer, m_winScreen, NULL, &m_bg1.m_dst);
 	}
-	else if (gameState == 1 || gameState == 2)
+	else if (gameState == 1 || gameState == 2) // game is being played
 	{
 		//Render Platforms
 		for (SDL_Rect x : m_Platforms)
@@ -819,4 +819,55 @@ void Engine::Clean()
 	SDL_Quit();
 }
 
+void Engine::LevelInitialize(int level)
+{
+	switch (level)
+	{
+	case 1: //loading level 1 into the current level variables
+		int i;
+		//delete all the current obstacles
+		for (SDL_Rect obstacle : m_Obstacles)
+		{
+			m_Obstacles[i] = *new SDL_Rect();
+		}
+		i = 0; //reset the value of i to 0 for the next loop
+		//add the level 1 obstacles
+		for(SDL_Rect obstacle : m_ObstaclesLevelOne)
+		{
+			m_Obstacles[i] = obstacle;
+			i++;
+		}
+		i = 0;
+		//delete all the current platforms
+		for (SDL_Rect platform : m_Platforms)
+		{
+			m_Platforms[i] = *new SDL_Rect();
+		}
+		i = 0;
+		//add the level 1 platforms
+		for (SDL_Rect obstacle : m_PlatformsLevelOne)
+		{
+			m_Platforms[i] = obstacle;
+			i++;
+		}
+		m_pGoal = m_pGoalLevelOne; //set the goal location
+		m_pCollectible = m_pCollectibleLevelOne; //set the collectible location
+		//set the player's position to the spawn location
 
+		//deletes all enemies and recreate them
+		m_yellowEnemyCreation.clear();
+		m_yellowEnemyCreation.shrink_to_fit();
+		int x = 0;
+		for (auto element : m_Platforms)
+		{
+			x++;
+			if (x != 5)
+				m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
+
+		}
+		m_player.SetX(levelOneSpawnX);
+		m_player.SetY(levelOneSpawnY);
+	default:
+		break;
+	}
+}
