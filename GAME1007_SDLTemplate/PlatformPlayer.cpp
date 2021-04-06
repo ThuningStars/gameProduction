@@ -15,6 +15,9 @@ void PlatformPlayer::Init(SDL_Renderer* r)
 	m_maxVelY = JUMPFORCE;
 	m_gravity = GRAVITY;
 	m_drag = 0.80;
+
+	m_isFall = false;
+	m_forgetTimer = 0;
 }
 
 SDL_Rect* PlatformPlayer::GetDstRect()
@@ -35,8 +38,9 @@ void PlatformPlayer::Update()
 	m_velX = std::min(std::max(m_velX, -m_maxVelX), m_maxVelX);
 	m_dstRect.x += (int)m_velX;
 	// Y axis
-	m_velY += m_accelerationY + m_gravity;
-	m_velY = std::min(std::max(m_velY, -m_maxVelY), (m_gravity));
+
+	m_accelerationY += m_gravity;
+	m_velY += m_accelerationY;
 	m_dstRect.y += (int)m_velY;
 	// Reset acceleration.
 	m_accelerationX = m_accelerationY = 0.0;
@@ -69,7 +73,21 @@ void PlatformPlayer::Update()
 		if (m_srcRect.x == 792)
 			m_srcRect.x = 0;
 	}
-	
+
+	if (!m_grounded)
+	{
+		if (m_isForgettable)
+		{
+			m_forgetTimer++;
+		}
+		if(m_forgetTimer>=10)
+		{
+			m_forgetTimer = 0;
+			m_isForgettable = false;
+		}
+	}
+
+	cout << m_isForgettable << endl;
 }
 
 void PlatformPlayer::Render(SDL_Texture* texture, PlatformPlayer player, SDL_RendererFlip flip)
@@ -91,7 +109,13 @@ void PlatformPlayer::StopY() {	m_velY = 0.0; }
 
 void PlatformPlayer::SetAccelX(double a) { m_accelerationX = a; }
 
-void PlatformPlayer::SetAccelY(double a) { m_accelerationY = a; }
+void PlatformPlayer::SetAccelY(double a)
+{
+	if (m_isFall)
+		m_velY = 0;
+
+	m_accelerationY = a;
+}
 
 void PlatformPlayer::SetRunning(bool r)
 {
@@ -102,7 +126,24 @@ bool PlatformPlayer::isGrounded() { return m_grounded; }
 
 bool PlatformPlayer::getRunning() { return m_running; }
 
-void PlatformPlayer::SetGrounded(bool g) { m_grounded = g; }
+void PlatformPlayer::SetGrounded(bool g)
+{
+	m_grounded = g;
+	if (!m_isFall)
+	{
+		m_isForgettable = !g;
+		m_isFall = true;
+	}
+}
+bool PlatformPlayer::isForgettable()
+{
+	return m_isForgettable;
+}
+
+void PlatformPlayer::setForgettable(bool state)
+{
+	m_isForgettable = state;
+}
 
 double PlatformPlayer::GetVelX() { return m_velX; }
 
