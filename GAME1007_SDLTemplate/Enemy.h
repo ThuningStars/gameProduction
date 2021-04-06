@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "PlayerBullet.h"
-#define GRAVITY 6.0
+//#define GRAVITY 6.0
 using namespace std;
 
 

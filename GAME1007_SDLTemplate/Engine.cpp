@@ -143,11 +143,11 @@ void Engine::HandleEvents()
 		case SDL_KEYDOWN:
 			if (gameState == 1) //checks if the game is in play mode
 			{
-				if (event.key.keysym.sym == ' ' && m_player.isGrounded())
+				if (event.key.keysym.sym == ' ' && (m_player.isGrounded()||m_player.isForgettable()))
 				{
-						m_player.SetAccelY(-JUMPFORCE);
 						m_player.SetGrounded(false);
-
+						m_player.SetAccelY(-(JUMPFORCE));				
+						
 						// change animation to running
 						m_player.SetRunning(true);
 						Mix_VolumeChunk(m_pJump, 3);
@@ -179,6 +179,7 @@ void Engine::CheckCollision()
 {
 	//collided = false;
 	m_player.SetGrounded(false);
+
 	//I edited this section to work no matter how many platforms there are, @ Ryan on discord if it's confusing
 	for (SDL_Rect x : m_Platforms)
 	{
@@ -188,6 +189,7 @@ void Engine::CheckCollision()
 			{
 				//colliding with the top side of platforms.
 				m_player.SetGrounded(true);
+				m_player.m_isFall = false;
 				m_player.StopY();
 				m_player.SetY(x.y - m_player.GetDstRect()->h);
 			}
@@ -220,6 +222,7 @@ void Engine::CheckCollision()
 			{
 				//colliding with the top side of platforms.
 				m_player.SetGrounded(true);
+				m_player.m_isFall = false;
 				m_player.StopY();
 				m_player.SetY(x.y - m_player.GetDstRect()->h);
 			}
@@ -818,5 +821,4 @@ void Engine::Clean()
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
 }
-
 
