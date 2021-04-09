@@ -33,9 +33,8 @@ private: // private properties.
 	const Uint8* m_keystates;
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;		// FIRTS
-	SDL_Rect m_Platforms[4] = {
-
-
+	SDL_Rect m_Platforms[4];
+	SDL_Rect m_PlatformsLevelOne[4] = {
 
 		// third
 		 {0,300,140,20}, // TOP LEFT GROUND
@@ -50,15 +49,42 @@ private: // private properties.
 
 			{960, 720, 70, 50}, // top down right
 
+	}; //Position X and y, width and height
+	SDL_Rect m_PlatformlevelTwo[8] = {
 
 
 
+		// 0
+		 {250,300,120,20},
+		 // 1
+		  {650,300,120,20},
+		  // 2
+		  {580,650,120,20},// Ground left
+		  //3
+		 {240, 650, 120, 20}, // top down right
 
+		 //4
+		 {70, 380, 50, 20},
+		 //5
+		 {900, 380, 50, 20},
+		 //6
+		 {130,430, 50,20},
+		 //7
+		 {500,180,50,20}
 
 
 
 	}; //Position X and y, width and height
-	SDL_Rect m_Obstacles[20]
+	SDL_Rect m_obstalceLevel2[20]
+	{
+						//spaning point
+						{400,750,150,20},
+						//GOAL
+						{450,100,120,20},
+	};
+	
+	SDL_Rect m_Obstacles[20];
+	SDL_Rect m_ObstaclesLevelOne[20]
 	{
 		//First
 	 {0,570,170,20},////first jump ground + enemies
@@ -111,11 +137,16 @@ private: // private properties.
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
-	vector<Enemy*> m_yellowEnemyCreation;
-	int m_EnemyTimer;
+	vector<Enemy*> m_yellowEnemyCreation, m_yellowEnemyLevelOne;
+	int m_EnemyTimer, currentLevel, levelOneSpawnX = 462, levelOneSpawnY = 600;
 
-	Collectible* m_pCollectible, *m_pGoal;
+	int timer = 0;
+	int timer2 = 0;
+	int timer3 = 0;
+	// currentLevel is the level currently being played
 
+	Collectible* m_pCollectible, *m_pGoal, *m_pGoalLevelOne, *m_pCollectibleLevelOne;
+	Collectible* m_pCollectibleLVL2_1, * m_pCollectibleLVL2_2, * m_pCollectibleLVL2_3, *m_pGoalLvl2;
 	// Textures
 	SDL_Texture* m_pTexture;
 
@@ -130,6 +161,8 @@ private: // private method prototypes.
 	void Update();
 	void Render();
 	void Sleep();
+	void LevelInitialize(int level);
+	void move_platforms();
 
 public: // public method prototypes.
 	int Run();

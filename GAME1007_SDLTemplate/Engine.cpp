@@ -118,8 +118,17 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	Mix_VolumeMusic(50);
 
 	//Item
-	m_pCollectible = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
-	m_pGoal = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 940, 50, 75,50  });
+	m_pCollectibleLevelOne = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
+	m_pGoalLevelOne = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 940, 50, 75,50  });
+
+	//Items LVL 2
+	/*m_pCollectibleLVL2_1 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 870, 300, 30, 30 });
+
+	m_pCollectibleLVL2_2 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 100, 300, 30, 30 });
+
+	m_pCollectibleLVL2_3 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 500, 300, 30, 30 });
+
+	m_pGoalLvl2 = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 435, 30, 150,75 });*/
 	
 	return true;
 }
@@ -152,6 +161,7 @@ void Engine::HandleEvents()
 						m_player.SetRunning(true);
 						Mix_VolumeChunk(m_pJump, 3);
 						Mix_PlayChannel(-1, m_pJump, 0);
+						
 				}		
 			}
 
@@ -407,10 +417,22 @@ void Engine::CheckCollision()
 }
 
 void Engine::Update()
-{
+{	//if Gamestate = level2
+	//move_platforms();
+	/*m_pCollectibleLVL2_1->Update();
+	m_pCollectibleLVL2_2->Update();
+	m_pCollectibleLVL2_3->Update();
+	m_pGoalLvl2->Update();
+
+	*/
+
+	
+
+	
 	//checks if the game is being played
 	if (gameState == 1)
 	{
+		
 		Mix_ResumeMusic();
 		//Item
 		m_pCollectible->Update();
@@ -544,15 +566,16 @@ void Engine::Update()
 			playerHealth++;
 		}
 		
-		if (m_yellowEnemyCreation.size() == 0 && m_player.GetDstRect()->x > 950 && m_player.GetDstRect()->y < 200)
+		
+		if(m_yellowEnemyCreation.size() == 0 && m_player.GetDstRect()->x > 950 && m_player.GetDstRect()->y < 200)
 		{
+
 			gameState = 3; //win state
 			Mix_PauseMusic();
 			Mix_VolumeChunk(m_pWin, 16);
 			Mix_VolumeChunk(m_pCheer, 16);
 			Mix_PlayChannel(-1, m_pWin, 0);
 			Mix_PlayChannel(-1, m_pCheer, 0);
-			
 		}
 		if (playerHealth == 0 && gameState == 1)
 		{
@@ -652,7 +675,7 @@ void Engine::Render()
 	{
 		SDL_RenderCopy(m_pRenderer, m_winScreen, NULL, &m_bg1.m_dst);
 	}
-	else if (gameState == 1 || gameState == 2)
+	else if (gameState == 1 || gameState == 2) // game is being played
 	{
 		//Render Platforms
 		for (SDL_Rect x : m_Platforms)
@@ -736,6 +759,13 @@ void Engine::Render()
 	SDL_RenderPresent(m_pRenderer); // Flip buffers - send data to window.
 	// Any drawing here...
 
+	//if gamestate = level2
+	/*m_pCollectibleLVL2_1->Render();
+	m_pCollectibleLVL2_2->Render();
+	m_pCollectibleLVL2_3->Render();
+	m_pGoalLvl2->Render();*/
+	
+	
 }
 
 void Engine::Sleep()
@@ -822,3 +852,153 @@ void Engine::Clean()
 	SDL_Quit();
 }
 
+void Engine::LevelInitialize(int level)
+{
+	int i;
+	switch (level)
+	{
+	case 1: //loading level 1 into the current level variables
+		
+		//delete all the current obstacles
+		for (SDL_Rect obstacle : m_Obstacles)
+		{
+			m_Obstacles[i] = *new SDL_Rect();
+			i++;
+		}
+		i = 0; //reset the value of i to 0 for the next loop
+		//add the level 1 obstacles
+		for(SDL_Rect obstacle : m_ObstaclesLevelOne)
+		{
+			m_Obstacles[i] = obstacle;
+			i++;
+		}
+		i = 0;
+		//delete all the current platforms
+		for (SDL_Rect platform : m_Platforms)
+		{
+			m_Platforms[i] = *new SDL_Rect();
+			i++;
+		}
+		i = 0;
+		//add the level 1 platforms
+		for (SDL_Rect obstacle : m_PlatformsLevelOne)
+		{
+			m_Platforms[i] = obstacle;
+			i++;
+		}
+		m_pGoal = m_pGoalLevelOne; //set the goal location
+		m_pCollectible = m_pCollectibleLevelOne; //set the collectible location
+		//set the player's position to the spawn location
+
+		//deletes all enemies and recreate them
+		m_yellowEnemyCreation.clear();
+		m_yellowEnemyCreation.shrink_to_fit();
+		int x = 0;
+		for (auto element : m_Platforms)
+		{
+			x++;
+			if (x != 5)
+				m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
+
+		}
+		m_player.SetX(levelOneSpawnX);
+		m_player.SetY(levelOneSpawnY);
+
+	case 2: //loading level 1 into the current level variables
+	
+		//delete all the current obstacles
+		for (SDL_Rect obstacle : m_Obstacles)
+		{
+			m_Obstacles[i] = *new SDL_Rect();
+			i++;
+		}
+		i = 0; //reset the value of i to 0 for the next loop
+
+		//delete all the current platforms
+		for (SDL_Rect platform : m_Platforms)
+		{
+			m_Platforms[i] = *new SDL_Rect();
+			i++;
+		}
+		i = 0;
+		//add the level 1 platforms
+		for (SDL_Rect obstacle : m_PlatformlevelTwo)
+		{
+			m_Platforms[i] = obstacle;
+			i++;
+		}
+		
+		m_pGoal = m_pGoalLevelOne; //set the goal location
+		m_pCollectible = m_pCollectibleLevelOne; //set the collectible location
+		//set the player's position to the spawn location
+
+		//deletes all enemies and recreate them
+		m_yellowEnemyCreation.clear();
+		m_yellowEnemyCreation.shrink_to_fit();
+		
+		/*for (auto element : m_Platforms)
+		{
+			x++;
+			if (x != 5)
+				m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
+
+		}*/
+		m_player.SetX(levelOneSpawnX);
+		m_player.SetY(levelOneSpawnY);
+	default:
+		break;
+	}
+}
+
+void Engine::move_platforms()
+{
+
+	timer++;
+	timer2++;
+	timer3++;
+
+	if (timer >= 0 && timer <= 130)
+	{
+		(m_Platforms[3].x--);
+		(m_Platforms[4].y++);
+	}
+	if (timer >= 0 && timer <= 130)
+	{
+		m_Platforms[2].x++;
+		(m_Platforms[5].y++);
+	}
+	else
+	{
+		m_Platforms[3].x++;
+		m_Platforms[2].x--;
+		m_Platforms[4].y--;
+		m_Platforms[5].y--;
+
+	}
+	if (timer > 260)
+		timer = 0;
+
+
+	if (timer2 >= 0 && timer2 <= 700)
+	{
+		m_Platforms[6].x++;
+	}
+	else
+	{
+		m_Platforms[6].x--;
+	}
+	if (timer2 > 1400)
+		timer2 = 0;
+
+	if (timer3 >= 0 && timer3 <= 50)
+	{
+		m_Platforms[7].y++;
+	}
+	else
+	{
+		m_Platforms[7].y--;
+	}
+	if (timer3 > 100)
+		timer3 = 0;
+
+}
