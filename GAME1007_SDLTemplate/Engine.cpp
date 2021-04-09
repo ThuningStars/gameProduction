@@ -854,7 +854,8 @@ void Engine::Clean()
 
 void Engine::LevelInitialize(int level)
 {
-	int i;
+	int i = 0;
+	int x = 0;
 	switch (level)
 	{
 	case 1: //loading level 1 into the current level variables
@@ -893,7 +894,7 @@ void Engine::LevelInitialize(int level)
 		//deletes all enemies and recreate them
 		m_yellowEnemyCreation.clear();
 		m_yellowEnemyCreation.shrink_to_fit();
-		int x = 0;
+		
 		for (auto element : m_Platforms)
 		{
 			x++;
