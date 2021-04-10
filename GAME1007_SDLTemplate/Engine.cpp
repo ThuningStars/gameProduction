@@ -120,7 +120,16 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	//Item
 	m_pCollectibleLevelOne = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
 	m_pGoalLevelOne = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 940, 50, 75,50  });
-	
+
+	//Items LVL 2 
+	/*m_pCollectibleLVL2_1 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 870, 300, 30, 30 });
+
+	m_pCollectibleLVL2_2 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 100, 300, 30, 30 });
+
+	m_pCollectibleLVL2_3 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 500, 300, 30, 30 });
+
+	m_pGoalLvl2 = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 435, 30, 150,75 });*/
+
 	return true;
 }
 
@@ -141,25 +150,25 @@ void Engine::HandleEvents()
 			break;
 
 		case SDL_KEYDOWN:
-			if (gameState == 1) //checks if the game is in play mode
+			if (gameState == 1) //checks if the game is in play mode 
 			{
-				if (event.key.keysym.sym == ' ' && m_player.isGrounded())
+				if (event.key.keysym.sym == ' ' && (m_player.isGrounded() || m_player.isForgettable()))
 				{
-						m_player.SetAccelY(-JUMPFORCE);
-						m_player.SetGrounded(false);
+					m_player.SetGrounded(false);
+					m_player.SetAccelY(-(JUMPFORCE));
 
-						// change animation to running
-						m_player.SetRunning(true);
-						Mix_VolumeChunk(m_pJump, 3);
-						Mix_PlayChannel(-1, m_pJump, 0);
-				}		
+					// change animation to running 
+					m_player.SetRunning(true);
+					Mix_VolumeChunk(m_pJump, 3);
+					Mix_PlayChannel(-1, m_pJump, 0);
+				}
 			}
 
 
 		case SDL_KEYUP:
-			if (gameState == 1) //checks if the game is in play mode
+			if (gameState == 1) //checks if the game is in play mode 
 			{
-				// change animation to idle
+				// change animation to idle 
 				m_player.SetRunning(false);
 				m_player.setAttack(false);
 			}
@@ -177,35 +186,37 @@ bool Engine::KeyDown(const SDL_Scancode c)
 
 void Engine::CheckCollision()
 {
-	//collided = false;
+	//collided = false; 
 	m_player.SetGrounded(false);
-	//I edited this section to work no matter how many platforms there are, @ Ryan on discord if it's confusing
+
+	//I edited this section to work no matter how many platforms there are, @ Ryan on discord if it's confusing 
 	for (SDL_Rect x : m_Platforms)
 	{
 		if (SDL_HasIntersection(m_player.GetDstRect(), &x))
 		{
 			if ((m_player.GetDstRect()->y + m_player.GetDstRect()->h) - (float)m_player.GetVelY() <= x.y && !collided)
 			{
-				//colliding with the top side of platforms.
+				//colliding with the top side of platforms. 
 				m_player.SetGrounded(true);
+				m_player.m_isFall = false;
 				m_player.StopY();
 				m_player.SetY(x.y - m_player.GetDstRect()->h);
 			}
 			else if (m_player.GetDstRect()->y - (float)m_player.GetVelY() >= (x.y + x.h) && !collided)
 			{
-				//colliding with the bottom side of platforms.
+				//colliding with the bottom side of platforms. 
 				m_player.StopY();
 				m_player.SetY(x.y + x.h);
 			}
 			else if ((m_player.GetDstRect()->x + m_player.GetDstRect()->w) - (float)m_player.GetVelX() <= x.x && !collided)
 			{
-				//colliding with the left side of platforms.
+				//colliding with the left side of platforms. 
 				m_player.StopX();
 				m_player.SetX(x.x - m_player.GetDstRect()->w);
 			}
 			else if (m_player.GetDstRect()->x - (float)m_player.GetVelX() >= (x.x + x.w) && !collided)
 			{
-				//colliding with the right side of platforms.
+				//colliding with the right side of platforms. 
 				m_player.StopX();
 				m_player.SetX(x.x + x.w);
 			}
@@ -218,8 +229,9 @@ void Engine::CheckCollision()
 		{
 			if ((m_player.GetDstRect()->y + m_player.GetDstRect()->h) - (float)m_player.GetVelY() <= x.y && !collided)
 			{
-				//colliding with the top side of platforms.
+				//colliding with the top side of platforms. 
 				m_player.SetGrounded(true);
+				m_player.m_isFall = false;
 				m_player.StopY();
 				m_player.SetY(x.y - m_player.GetDstRect()->h);
 			}
@@ -405,6 +417,17 @@ void Engine::CheckCollision()
 
 void Engine::Update()
 {
+	//if Gamestate = level2 
+	//move_platforms(); 
+	/*m_pCollectibleLVL2_1->Update();
+	m_pCollectibleLVL2_2->Update();
+	m_pCollectibleLVL2_3->Update();
+	m_pGoalLvl2->Update();
+
+	*/
+
+
+
 	//checks if the game is being played
 	if (gameState == 1)
 	{
@@ -733,6 +756,12 @@ void Engine::Render()
 	SDL_RenderPresent(m_pRenderer); // Flip buffers - send data to window.
 	// Any drawing here...
 
+
+		//if gamestate = level2 
+	/*m_pCollectibleLVL2_1->Render();
+	m_pCollectibleLVL2_2->Render();
+	m_pCollectibleLVL2_3->Render();
+	m_pGoalLvl2->Render();*/
 }
 
 void Engine::Sleep()
@@ -821,14 +850,16 @@ void Engine::Clean()
 
 void Engine::LevelInitialize(int level)
 {
+	int i;
 	switch (level)
 	{
 	case 1: //loading level 1 into the current level variables
-		int i;
+		
 		//delete all the current obstacles
 		for (SDL_Rect obstacle : m_Obstacles)
 		{
 			m_Obstacles[i] = *new SDL_Rect();
+			i++;
 		}
 		i = 0; //reset the value of i to 0 for the next loop
 		//add the level 1 obstacles
@@ -870,4 +901,56 @@ void Engine::LevelInitialize(int level)
 	default:
 		break;
 	}
+}
+void Engine::move_platforms()
+{
+
+	timer++;
+	timer2++;
+	timer3++;
+
+	if (timer >= 0 && timer <= 130)
+	{
+		(m_Platforms[3].x--);
+		(m_Platforms[4].y++);
+	}
+	if (timer >= 0 && timer <= 130)
+	{
+		m_Platforms[2].x++;
+		(m_Platforms[5].y++);
+	}
+	else
+	{
+		m_Platforms[3].x++;
+		m_Platforms[2].x--;
+		m_Platforms[4].y--;
+		m_Platforms[5].y--;
+
+	}
+	if (timer > 260)
+		timer = 0;
+
+
+	if (timer2 >= 0 && timer2 <= 700)
+	{
+		m_Platforms[6].x++;
+	}
+	else
+	{
+		m_Platforms[6].x--;
+	}
+	if (timer2 > 1400)
+		timer2 = 0;
+
+	if (timer3 >= 0 && timer3 <= 50)
+	{
+		m_Platforms[7].y++;
+	}
+	else
+	{
+		m_Platforms[7].y--;
+	}
+	if (timer3 > 100)
+		timer3 = 0;
+
 }

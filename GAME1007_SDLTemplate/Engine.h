@@ -59,71 +59,108 @@ private: // private properties.
 
 
 	}; //Position X and y, width and height
+	SDL_Rect m_PlatformlevelTwo[8] = {
+
+
+
+		// 0 
+		 {250,300,120,20},
+		 // 1 
+		  {650,300,120,20},
+		  // 2 
+		  {580,650,120,20},// Ground left 
+		  //3 
+		 {240, 650, 120, 20}, // top down right 
+
+		 //4 
+		 {70, 380, 50, 20},
+		 //5 
+		 {900, 380, 50, 20},
+		 //6 
+		 {130,430, 50,20},
+		 //7 
+		 {500,180,50,20}
+
+
+
+	}; //Position X and y, width and height 
+	SDL_Rect m_obstalceLevel2[20]
+	{
+		//spaning point 
+		{400,750,150,20},
+		//GOAL 
+		{450,100,120,20},
+	};
+
 	SDL_Rect m_Obstacles[20];
 	SDL_Rect m_ObstaclesLevelOne[20]
 	{
-		//First
-	 {0,570,170,20},////first jump ground + enemies
-	{0,470,50	,100},// first jump ground WALL
-	{50,520,60	,70}, //first jump ground OBSTACLE - REMEMBER CHANGE TEXTURES OF OBSTACLES
-	//SECOND
-	{210,440,120,20},// 2 jump ground
-	{330,440,100,20},// 2 jump ground
-	{430,240,20,220},// 2 jump WALL
-	{230,325,30,30},// 2 jump OBSTACLE
+		//First 
+	 {0,570,170,20},////first jump ground + enemies 
+	{0,470,50	,100},// first jump ground WALL 
+	{50,520,60	,70}, //first jump ground OBSTACLE - REMEMBER CHANGE TEXTURES OF OBSTACLES 
+	//SECOND 
+	{210,440,120,20},// 2 jump ground 
+	{330,440,100,20},// 2 jump ground 
+	{430,240,20,220},// 2 jump WALL 
+	{230,325,30,30},// 2 jump OBSTACLE 
 	{310,365,30,30},
-	{400,410,30,30},// 2 jump OBSTACLE
+	{400,410,30,30},// 2 jump OBSTACLE 
 
-	//third
-	{120,210,20,20}, // TOP LEFT GROUND JUMP OBSTACLE
+	//third 
+	{120,210,20,20}, // TOP LEFT GROUND JUMP OBSTACLE 
 
-	//FIFT
+	//FIFT 
 	{640,340,70,20},
 	{750,240,20,20},
 	{850,190,20,20},
 
 
-	//GROUND
-	{400,650,100,20},//initial structure
+	//GROUND 
+	{400,650,100,20},//initial structure 
 
-	{200,670,50,50},// obstacle Ground left
-	{600, 720, 200, 50}, // Ground right
-	{600, 680, 100, 50},//Ground right second level
-	{600, 630, 50, 50},// Ground right
+	{200,670,50,50},// obstacle Ground left 
+	{600, 720, 200, 50}, // Ground right 
+	{600, 680, 100, 50},//Ground right second level 
+	{600, 630, 50, 50},// Ground right 
 	{600, 530, 50, 50},
 
-//GOAL
-						{940,100,120,20},// goal
+	//GOAL 
+							{940,100,120,20},// goal 
 	};
-	SDL_Rect m_signOne = { 422,600,35,50 }; //the level one sign position
-	SDL_Rect m_levelOneTextPosition = { 300,300,400,250 }; //the text that appears when you're near the level one sign
-	//size of the ground texture for rendering
-	SDL_Rect textureSrc = { 0, 0, 225, 225 }; //NOT CURRENTLY USING THIS VARIABLE
+	SDL_Rect m_signOne = { 422,600,35,50 }; //the level one sign position 
+	SDL_Rect m_levelOneTextPosition = { 300,300,400,250 }; //the text that appears when you're near the level one sign 
+	//size of the ground texture for rendering 
+	SDL_Rect textureSrc = { 0, 0, 225, 225 }; //NOT CURRENTLY USING THIS VARIABLE 
 
 	Mix_Music* m_pMusic, * m_pMenuMusic;
-	Mix_Chunk* m_pBullet, *m_pCheer, *m_pGameOver, *m_pJump, *m_pEnemy, *m_pWin;
+	Mix_Chunk* m_pBullet, * m_pCheer, * m_pGameOver, * m_pJump, * m_pEnemy, * m_pWin;
 	vector<Mix_Chunk*> m_vSounds;
-	//SDL_Rect m_Camera = { 100, 0, WIDTH, HEIGHT };
+	//SDL_Rect m_Camera = { 100, 0, WIDTH, HEIGHT }; 
 	PlatformPlayer m_player;
 	vector<Bullet*> m_playerbullet;
 	vector<LeftBullet*> m_playerleftbullet;
 	SDL_Texture* m_playerIdleTexture, * m_playerRunTexture, * m_playerAttackTexture, * m_groundTexture, * m_obstacletexture;
 	SDL_Texture* m_yellowEnemyWalkTexture, * m_redEnemyWalkTexture, * m_yellowEenemyAttackTexture, * m_playerBullet;
-	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture, * m_pgoal, *m_signTexture, *m_levelOneText;
+	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, * m_gameOverScreen, * m_winScreen, * m_pCupTexture, * m_pgoal, * m_signTexture, * m_levelOneText;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
 	vector<Enemy*> m_yellowEnemyCreation, m_yellowEnemyLevelOne;
-	int m_EnemyTimer, currentLevel, levelOneSpawnX = 462, levelOneSpawnY = 600; 
-	// currentLevel is the level currently being played
+	int m_EnemyTimer, currentLevel, levelOneSpawnX = 462, levelOneSpawnY = 600;
 
-	Collectible* m_pCollectible, *m_pGoal, *m_pGoalLevelOne, *m_pCollectibleLevelOne;
+	int timer = 0;
+	int timer2 = 0;
+	int timer3 = 0;
+	// currentLevel is the level currently being played 
 
-	// Textures
+	Collectible* m_pCollectible, * m_pGoal, * m_pGoalLevelOne, * m_pCollectibleLevelOne;
+	Collectible* m_pCollectibleLVL2_1, * m_pCollectibleLVL2_2, * m_pCollectibleLVL2_3, * m_pGoalLvl2;
+	// Textures 
 	SDL_Texture* m_pTexture;
 
 
-private: // private method prototypes.
+private: // private method prototypes. 
 	int Init(const char* title, int xPos, int yPos, int width, int height, int flags);
 	void Clean();
 	void Wake();
@@ -134,11 +171,10 @@ private: // private method prototypes.
 	void Render();
 	void Sleep();
 	void LevelInitialize(int level);
+	void move_platforms();
 
-public: // public method prototypes.
+public: // public method prototypes. 
 	int Run();
 };
 
-#endif
-
-// Reminder: you can ONLY have declarations in headers, not logical code
+#endif  can ONLY have declarations in headers, not logical code
