@@ -469,6 +469,7 @@ void Engine::Update()
 		m_pCollectible->Update();
 		m_pGoal->Update();
 		
+		
 		//move right and left
 		if (KeyDown(SDL_SCANCODE_A))
 		{
@@ -632,18 +633,7 @@ void Engine::Update()
 			Mix_PlayMusic(m_pMusic, -1);
 			Mix_VolumeMusic(50); // 0-MIX_MAX_VOLUME (128).
 			//deletes all enemies and recreate them
-			m_yellowEnemyCreation.clear();
-			m_yellowEnemyCreation.shrink_to_fit();
-			int x = 0;
-			for (auto element : m_Platforms)
-			{
-				x++;
-				if (x != 5)
-				{
-					m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
-				}
-				m_flyingEnemyCreation.push_back(new FlyingEnemy(500, 500, 500, 50));
-			}
+			LevelInitialize(1);
 		}
 		
 	}
@@ -689,10 +679,7 @@ void Engine::Update()
 
 void Engine::Render()
 {
-	if(gameState == 1)
-	{
-		LevelInitialize(1);
-	}
+
 
 	SDL_SetRenderDrawColor(m_pRenderer, 64, 128, 255, 255);
 	SDL_RenderClear(m_pRenderer);
@@ -935,12 +922,17 @@ void Engine::LevelInitialize(int level)
 		//deletes all enemies and recreate them
 		m_yellowEnemyCreation.clear();
 		m_yellowEnemyCreation.shrink_to_fit();
+		m_flyingEnemyCreation.clear();
+		m_flyingEnemyCreation.shrink_to_fit();
 		
 		for (auto element : m_Platforms)
 		{
 			x++;
 			if (x != 5)
+			{
 				m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
+			}
+			m_flyingEnemyCreation.push_back(new FlyingEnemy(500, 500, 500, 50));
 
 		}
 		m_player.SetX(levelOneSpawnX);
