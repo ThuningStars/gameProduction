@@ -46,6 +46,8 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 					m_signTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/sign.png");
 					m_levelOneText = IMG_LoadTexture(m_pRenderer, "../assets/textures/level1Sign.png");
 
+					m_flyEnemyTexture = IMG_LoadTexture(m_pRenderer, "../assets/enemy/Flying Enemy.png");
+
 					cout << "Fourth pass." << endl;
 
 					if (Mix_Init(MIX_INIT_MP3) != 0) // Mixer init success.
@@ -278,6 +280,34 @@ void Engine::CheckCollision()
 
 	}
 
+	for (unsigned i = 0; i < m_flyingEnemyCreation.size(); i++)
+	{
+		// Cooldown feature
+		if (coolDown > 0 && coolDown != 0)
+		{
+			coolDown--;
+		}
+
+		// If the player gets hit they lose health and can't get hit again unti the cooldown ends
+		if (SDL_HasIntersection(m_player.GetDstRect(), m_flyingEnemyCreation[i]->GetRect()) && coolDown == 0)
+		{
+			cout << "Hit!!" << endl << endl;
+			playerHealth--;
+			coolDown = 300;
+			cout << "You have " << playerHealth << " left" << endl << endl;
+
+			// set attack animation to true
+			m_flyingEnemyCreation[i]->SetAttack(true);
+
+		}
+
+		if (coolDown == 0)
+		{
+			// set attack animation back to false
+			m_flyingEnemyCreation[i]->SetAttack(false);
+		}
+
+	}
 	//Player right bullet - collision to enemy
 	for (unsigned i = 0; i < m_yellowEnemyCreation.size(); i++)
 	{
@@ -473,7 +503,11 @@ void Engine::Update()
 			//m_Camera.x = -m_player.GetDstRect()->x+WIDTH/2;
 		}
 
-
+		for (unsigned i = 0; i < m_flyingEnemyCreation.size(); i++) // size() is actual filled numbers of elements
+		{
+			m_flyingEnemyCreation[i]->Update();
+		}
+			
 		for (unsigned i = 0; i < m_yellowEnemyCreation.size(); i++) // size() is actual filled numbers of elements
 		{
 			m_yellowEnemyCreation[i]->Update();
@@ -582,8 +616,10 @@ void Engine::Update()
 			{
 				x++;
 				if (x != 5)
+				{
 					m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
-
+				}
+				m_flyingEnemyCreation.push_back(new FlyingEnemy(500, 500, 500, 50));
 			}
 		}
 		
@@ -685,7 +721,11 @@ void Engine::Render()
 			else
 				m_yellowEnemyCreation[i]->Render(m_pRenderer, m_yellowEenemyAttackTexture, flipEnemy);
 		}
-		
+		for (unsigned i = 0; i < m_flyingEnemyCreation.size(); i++) // size() is actual filled numbers of elements
+		{
+				m_flyingEnemyCreation[i]->Render(m_pRenderer, m_flyEnemyTexture, flipEnemy);
+
+		}
 		// Render the player
 		if (m_player.getRunning() == false && m_player.getAttack() == false)
 		{
