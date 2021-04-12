@@ -123,6 +123,8 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	m_pCollectibleLevelOne = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
 	m_pGoalLevelOne = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 940, 50, 75,50  });
 
+
+	//
 	//Items LVL 2 
 	/*m_pCollectibleLVL2_1 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 870, 300, 30, 30 });
 
@@ -461,6 +463,7 @@ void Engine::Update()
 	//checks if the game is being played
 	if (gameState == 1)
 	{
+		
 		Mix_ResumeMusic();
 		//Item
 		m_pCollectible->Update();
@@ -686,7 +689,10 @@ void Engine::Update()
 
 void Engine::Render()
 {
-
+	if(gameState == 1)
+	{
+		LevelInitialize(1);
+	}
 
 	SDL_SetRenderDrawColor(m_pRenderer, 64, 128, 255, 255);
 	SDL_RenderClear(m_pRenderer);
@@ -890,7 +896,8 @@ void Engine::Clean()
 
 void Engine::LevelInitialize(int level)
 {
-	int i;
+	int i = 0;
+	int x = 0;
 	switch (level)
 	{
 	case 1: //loading level 1 into the current level variables
@@ -928,7 +935,7 @@ void Engine::LevelInitialize(int level)
 		//deletes all enemies and recreate them
 		m_yellowEnemyCreation.clear();
 		m_yellowEnemyCreation.shrink_to_fit();
-		int x = 0;
+		
 		for (auto element : m_Platforms)
 		{
 			x++;

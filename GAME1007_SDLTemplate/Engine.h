@@ -182,4 +182,4 @@ public: // public method prototypes.
 	int Run();
 };
 
-#endif  can ONLY have declarations in headers, not logical code
+#endif 
