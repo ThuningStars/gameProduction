@@ -13,6 +13,7 @@
 #include "PlatformPlayer.h"
 #include "PlayerBullet.h"
 #include "Enemy.h"
+#include "FlyingEnemy.h"
 #define FPS 60
 #define WIDTH 1024
 #define HEIGHT 768
@@ -142,10 +143,14 @@ private: // private properties.
 	vector<LeftBullet*> m_playerleftbullet;
 	SDL_Texture* m_playerIdleTexture, * m_playerRunTexture, * m_playerAttackTexture, * m_groundTexture, * m_obstacletexture;
 	SDL_Texture* m_yellowEnemyWalkTexture, * m_redEnemyWalkTexture, * m_yellowEenemyAttackTexture, * m_playerBullet;
-	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, * m_gameOverScreen, * m_winScreen, * m_pCupTexture, * m_pgoal, * m_signTexture, * m_levelOneText;
+
+	SDL_Texture* m_flyEnemyTexture;
+	
+	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture, * m_pgoal, *m_signTexture, *m_levelOneText;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
+	vector<FlyingEnemy*> m_flyingEnemyCreation;
 	vector<Enemy*> m_yellowEnemyCreation, m_yellowEnemyLevelOne;
 	int m_EnemyTimer, currentLevel, levelOneSpawnX = 462, levelOneSpawnY = 600;
 

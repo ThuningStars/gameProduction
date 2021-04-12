@@ -1,30 +1,30 @@
 #pragma once
-#ifndef ENEMY_H
-#define ENEMY_H
+#ifndef FLYINGENEMY_H
+#define FLYINGENEMY_H
 #include"SDL.h"
 #include <iostream>
 
 #include "PlayerBullet.h"
-//#define GRAVITY 6.0
+
 using namespace std;
 
 
-class Enemy : public Sprite
+class FlyingEnemy : public Sprite
 {
 private:
 	SDL_Rect m_src; // Source rectangle
 	SDL_Rect m_rect;
 
-	double m_angle = 0.0, m_speed;
+	int m_angle = 0, m_speed;
 	SDL_Point* m_pCenter = NULL;
 	bool m_attack = false;
 	SDL_RendererFlip m_flip = SDL_FLIP_NONE;
-	int m_leftX, m_leftY, m_rightX, m_rightY, m_timer = 0;
+	int m_upX, m_upY, m_bottomX, m_bottomY, m_timer = 0;
 
 
 public:
-	Enemy(int, int, int, int);
-	~Enemy();
+	FlyingEnemy(int, int, int, int);
+	~FlyingEnemy();
 	SDL_Rect* GetRect();// Source rectangle
 	void Update();
 	void Render(SDL_Renderer* rend);
