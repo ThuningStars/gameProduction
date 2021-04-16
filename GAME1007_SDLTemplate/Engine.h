@@ -29,6 +29,7 @@ private: // private properties.
 	bool m_running = false, pPressed = false, enterPressed = false, collided = false;
 	Uint32 m_start, m_end, m_delta, m_fps, score = 0, gameState = 0;
 	int m_shottimer = 0;
+	int level = 2;
 	// gameState 0 = title state, 1 = gameplay state, 2 = game paused state, 3 = win state, 4 = game over state
 	string scoreString;
 	const Uint8* m_keystates;
@@ -60,7 +61,7 @@ private: // private properties.
 
 
 	}; //Position X and y, width and height
-	SDL_Rect m_PlatformlevelTwo[8] = {
+	SDL_Rect m_PlatformsLevelTwo[8] = {
 
 
 
@@ -85,7 +86,7 @@ private: // private properties.
 
 
 	}; //Position X and y, width and height 
-	SDL_Rect m_obstalceLevel2[20]
+	SDL_Rect m_ObstaclesLevelTwo[20]
 	{
 		//spaning point 
 		{400,750,150,20},
@@ -152,7 +153,7 @@ private: // private properties.
 	Sprite m_yellowEnemy, m_bg1;
 	vector<FlyingEnemy*> m_flyingEnemyCreation;
 	vector<Enemy*> m_yellowEnemyCreation, m_yellowEnemyLevelOne;
-	int m_EnemyTimer, currentLevel, levelOneSpawnX = 462, levelOneSpawnY = 600;
+	int m_EnemyTimer, levelOneSpawnX = 462, levelOneSpawnY = 600;
 
 	int timer = 0;
 	int timer2 = 0;
