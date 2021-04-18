@@ -29,13 +29,13 @@ private: // private properties.
 	bool m_running = false, pPressed = false, enterPressed = false, collided = false;
 	Uint32 m_start, m_end, m_delta, m_fps, score = 0, gameState = 0;
 	int m_shottimer = 0;
-	int level = 2;
+	int level = 1;
 	// gameState 0 = title state, 1 = gameplay state, 2 = game paused state, 3 = win state, 4 = game over state
 	string scoreString;
 	const Uint8* m_keystates;
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;		// FIRTS
-	SDL_Rect m_Platforms[4];
+	SDL_Rect m_Platforms[9];
 	SDL_Rect m_PlatformsLevelOne[4] = {
 
 
@@ -61,27 +61,30 @@ private: // private properties.
 
 
 	}; //Position X and y, width and height
-	SDL_Rect m_PlatformsLevelTwo[8] = {
+	SDL_Rect m_PlatformsLevelTwo[9] = {
 
 
 
 		// 0 
-		 {250,300,120,20},
+		 {180,300,200,20},
 		 // 1 
-		  {650,300,120,20},
+		  {630,300,200,20},
 		  // 2 
 		  {580,650,120,20},// Ground left 
 		  //3 
 		 {240, 650, 120, 20}, // top down right 
 
 		 //4 
-		 {70, 380, 50, 20},
+		 {70, 400, 50, 20},
 		 //5 
-		 {900, 380, 50, 20},
+		 {900, 400, 50, 20},
 		 //6 
 		 {130,430, 50,20},
 		 //7 
-		 {500,180,50,20}
+		 {600,180,50,20},
+		 //8
+		 {380,180,50,20}
+
 
 
 
@@ -125,11 +128,20 @@ private: // private properties.
 	{600, 720, 200, 50}, // Ground right 
 	{600, 680, 100, 50},//Ground right second level 
 	{600, 630, 50, 50},// Ground right 
-	{600, 530, 50, 50},
+	{600, 530, 40, 40},
 
 	//GOAL 
 							{940,100,120,20},// goal 
 	};
+
+	SDL_Rect m_ObstaclesLevelThree[4]
+	{
+		{100, 300, 30, 30},
+		{130, 390, 30, 30},
+		{160, 480, 30, 30},
+		{190, 570, 30, 30}
+	};
+
 	SDL_Rect m_signOne = { 422,600,35,50 }; //the level one sign position 
 	SDL_Rect m_levelOneTextPosition = { 300,300,400,250 }; //the text that appears when you're near the level one sign 
 	//size of the ground texture for rendering 
@@ -145,9 +157,9 @@ private: // private properties.
 	SDL_Texture* m_playerIdleTexture, * m_playerRunTexture, * m_playerAttackTexture, * m_groundTexture, * m_obstacletexture;
 	SDL_Texture* m_yellowEnemyWalkTexture, * m_redEnemyWalkTexture, * m_yellowEenemyAttackTexture, * m_playerBullet;
 
-	SDL_Texture* m_flyEnemyTexture;
+	SDL_Texture* m_flyEnemyTexture, *m_bossTexture, *m_laserSmallTexture, *m_laserBigTexture, *m_bossBackground;
 	
-	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture, * m_pgoal, *m_signTexture, *m_levelOneText;
+	SDL_Texture* heartTexture, * m_pBGTexture, * m_titleScreen, *m_gameOverScreen, *m_winScreen,* m_pCupTexture, *m_goodWinScreen, * m_pgoal, *m_signTexture, *m_levelOneText;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_RendererFlip flipEnemy = SDL_FLIP_NONE;
 	Sprite m_yellowEnemy, m_bg1;
@@ -160,10 +172,20 @@ private: // private properties.
 	int timer3 = 0;
 	// currentLevel is the level currently being played 
 
-	Collectible* m_pCollectible, * m_pGoal, * m_pGoalLevelOne, * m_pCollectibleLevelOne;
+	Collectible* m_pCollectible1, * m_pGoal, * m_pGoalLevelOne, * m_pCollectibleLevelOne, *m_pCollectible2, *m_pCollectible3;
 	Collectible* m_pCollectibleLVL2_1, * m_pCollectibleLVL2_2, * m_pCollectibleLVL2_3, * m_pGoalLvl2;
+
 	// Textures 
 	SDL_Texture* m_pTexture;
+
+	//stuff for the boss
+	SDL_Rect m_bossSrc = {0, 0, 552, 536}; //boss Source rectangle
+	SDL_Rect m_laserSrc = { 0, 0, 1000, 64 };
+	SDL_Rect m_bossRect = {1200, 0, 350, 350}, m_laserRect; //boss dimensions
+
+	bool bossGoingDown = true, bossActive = false, m_laserFlip = true, laserOnScreen, bossDying;
+	SDL_RendererFlip m_bossFlip = SDL_FLIP_HORIZONTAL;
+	int m_bossTimer = 0, laserTimer = 0, laserY = 0, m_bossHealth = 30, bossFrameTimer = 0, bossFrame = 0;
 
 
 private: // private method prototypes. 
@@ -178,6 +200,9 @@ private: // private method prototypes.
 	void Sleep();
 	void LevelInitialize(int level);
 	void move_platforms();
+	void BossUpdate();
+	void BossRender();
+	void LaserRender();
 
 public: // public method prototypes. 
 	int Run();

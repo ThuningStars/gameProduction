@@ -43,8 +43,15 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 					m_titleScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/titlescreen.png");
 					m_gameOverScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/gameOverScreen.png");
 					m_winScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/winScreen.png");
+					m_goodWinScreen = IMG_LoadTexture(m_pRenderer, "../assets/textures/winScreenGoodEnd.png");
 					m_signTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/sign.png");
 					m_levelOneText = IMG_LoadTexture(m_pRenderer, "../assets/textures/level1Sign.png");
+
+					m_bossTexture = IMG_LoadTexture(m_pRenderer, "../assets/sprites/boss.png");
+					m_laserSmallTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/laserthin.png");
+					m_laserBigTexture = IMG_LoadTexture(m_pRenderer, "../assets/textures/laserthick.png");
+					m_bossBackground = IMG_LoadTexture(m_pRenderer, "../assets/background/BossBackground.png");
+
 
 					m_flyEnemyTexture = IMG_LoadTexture(m_pRenderer, "../assets/enemy/Flying Enemy.png");
 
@@ -102,6 +109,14 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	m_keystates = SDL_GetKeyboardState(nullptr);
 	m_bg1.m_src = { 0,0,1024,768 };
 	m_bg1.m_dst = { 0,0,1024,768 };
+
+	m_pCollectibleLVL2_1 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 870, 300, 30, 30 });
+	m_pCollectibleLVL2_2 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 100, 300, 30, 30 });
+	m_pCollectibleLVL2_3 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 500, 300, 30, 30 });
+
+	m_pCollectible2 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 100, 300, 30, 30 });
+	m_pCollectible3 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 500, 300, 30, 30 });
+
 	//int x = 0;
 	//for (auto element : m_Platforms)
 	//{
@@ -196,7 +211,7 @@ void Engine::CheckCollision()
 	{
 		if (SDL_HasIntersection(m_player.GetDstRect(), &x))
 		{
-			if ((m_player.GetDstRect()->y + m_player.GetDstRect()->h) - (float)m_player.GetVelY() <= x.y && !collided)
+			if ((m_player.GetDstRect()->y + m_player.GetDstRect()->h) - (float)m_player.GetVelY() <= x.y + 5 && !collided)
 			{
 				//colliding with the top side of platforms. 
 				m_player.SetGrounded(true);
@@ -287,6 +302,13 @@ void Engine::CheckCollision()
 			m_yellowEnemyCreation[i]->SetAttack(false);
 		}
 
+	}
+
+	//boss laser damage/collision
+	if (SDL_HasIntersection(m_player.GetDstRect(), &m_laserRect) && coolDown == 0 && laserTimer < 40)
+	{
+		playerHealth -= 1;
+		coolDown = 150;
 	}
 
 	for (unsigned i = 0; i < m_flyingEnemyCreation.size(); i++)
@@ -439,8 +461,16 @@ void Engine::CheckCollision()
 		cout << "You died!" << "/n";
 
 		//where the player respawns
-		m_player.SetX(462);
-		m_player.SetY(600);
+		if (level == 3)
+		{
+
+		}
+		else
+		{
+			m_player.SetX(130);
+			m_player.SetY(250);
+		}
+		
 		playerHealth--;
 	}
 }
@@ -464,10 +494,21 @@ void Engine::Update()
 		
 		Mix_ResumeMusic();
 		//Item
-		m_pCollectible->Update();
+		m_pCollectible1->Update();
+		m_pCollectible2->Update();
+		m_pCollectible3->Update();
 		m_pGoal->Update();
 		
+		if (level == 2)
+		{
+			move_platforms();
+		}
 		
+		if (level == 3)
+		{
+			BossUpdate();
+		}
+
 		//move right and left
 		if (KeyDown(SDL_SCANCODE_A))
 		{
@@ -514,7 +555,7 @@ void Engine::Update()
 
 		//wrap the player
 		if (m_player.GetDstRect()->x < 0) m_player.SetX(1);
-		else if (m_player.GetDstRect()->x > 1024.0) m_player.SetX(1023);
+		else if (m_player.GetDstRect()->x > 1000.0) m_player.SetX(1000);
 		
 		//Update the player
 		m_player.Update();
@@ -592,20 +633,40 @@ void Engine::Update()
 		}
 
 		// item
-		if (SDL_HasIntersection(m_player.GetDstRect(), m_pCollectible->getDest()) && coolDown == 0 && itemNum == 0)
+		if (SDL_HasIntersection(m_player.GetDstRect(), m_pCollectible1->getDest()) && coolDown == 0 && !m_pCollectible1->IsCollected())
 		{
 			coolDown = 300;
-			m_pCollectible->setIsCollected(true);
+			m_pCollectible1->setIsCollected(true);
 			itemNum++;
 			playerHealth++;
 		}
-		
-		if (m_yellowEnemyCreation.size() == 0 && m_player.GetDstRect()->x > 950 && m_player.GetDstRect()->y < 200)
+		if (level == 2)
 		{
-			if(level < 2)
+			if (SDL_HasIntersection(m_player.GetDstRect(), m_pCollectible2->getDest()) && coolDown == 0 && !m_pCollectible2->IsCollected())
+			{
+				coolDown = 300;
+				m_pCollectible2->setIsCollected(true);
+				itemNum++;
+				playerHealth++;
+			}
+			if (SDL_HasIntersection(m_player.GetDstRect(), m_pCollectible3->getDest()) && coolDown == 0 && !m_pCollectible3->IsCollected())
+			{
+				coolDown = 300;
+				m_pCollectible3->setIsCollected(true);
+				itemNum++;
+				playerHealth++;
+			}
+		}
+		
+		//{ 435, 30, 150,75 }
+		if (m_yellowEnemyCreation.size() == 0 && (m_player.GetDstRect()->x > 930 && m_player.GetDstRect()->y < 200) 
+				|| level == 2 && (m_player.GetDstRect()->x > 435 && m_player.GetDstRect()->x < 535 && m_player.GetDstRect()->y < 75))
+		{
+			if(level < 3)
 			LevelInitialize(++level);
 			else
 			{
+				level = 1;
 				gameState = 3; //win state
 				Mix_PauseMusic();
 				Mix_VolumeChunk(m_pWin, 16);
@@ -618,10 +679,33 @@ void Engine::Update()
 		if (playerHealth == 0 && gameState == 1)
 		{
 			gameState = 4; //game over state
+			level = 1;
+			LevelInitialize(level);
 			Mix_PauseMusic();
 			Mix_VolumeChunk(m_pGameOver, 10);
 			Mix_PlayChannel(-1, m_pGameOver, 0);
 			
+		}
+
+		//boss level specific collission
+		if (level == 3)
+		{
+			//boss getting hit collission
+			for (unsigned i = 0; i < m_playerbullet.size(); i++)
+			{
+				if (SDL_HasIntersection(m_playerbullet[i]->GetRekt(), &m_bossRect))
+				{
+					if (bossActive)
+					{
+						m_bossHealth--;
+					}
+					delete m_playerbullet[i];
+					m_playerbullet[i] = nullptr;
+					m_playerbullet.erase(m_playerbullet.begin() + i);
+					m_playerbullet.shrink_to_fit();
+					break;
+				}
+			}
 		}
 		
 	}
@@ -657,15 +741,16 @@ void Engine::Update()
 			gameState = 2;
 		}
 	}
-	else if (gameState == 4) //lets the player return to the title screen from the game over screen
+	else if (gameState == 4 || gameState == 3) //lets the player return to the title screen from the game over screen
 	{
+		
 		if (KeyDown(SDL_SCANCODE_RETURN) && enterPressed == false)
 		{
 			Mix_PlayMusic(m_pMenuMusic, -1);
 			Mix_VolumeMusic(50);
 			gameState = 0;
 			enterPressed = true;
-
+			LevelInitialize(1);
 		}
 	}
 
@@ -678,21 +763,28 @@ void Engine::Update()
 	{
 		enterPressed = false;
 	}
-	if(level == 2)
-	move_platforms();
+	
 }
 
 void Engine::Render()
 {
-
-
 	SDL_SetRenderDrawColor(m_pRenderer, 64, 128, 255, 255);
 	SDL_RenderClear(m_pRenderer);
 	//Render Background
 	SDL_RenderCopy(m_pRenderer, m_pBGTexture, &m_bg1.m_src, &m_bg1.m_dst);
+	if (level == 3)
+	{
+		SDL_RenderCopy(m_pRenderer, m_bossBackground, &m_bg1.m_src, &m_bg1.m_dst);
+	}
 	
 
 	SDL_SetRenderDrawColor(m_pRenderer, 192, 64, 0, 255);
+
+	//boss rendering
+	if (level == 3)
+	{
+		BossRender();
+	}
 
 	if (gameState == 0) //Title screen
 	{
@@ -704,7 +796,14 @@ void Engine::Render()
 	}
 	else if (gameState == 3)
 	{
-		SDL_RenderCopy(m_pRenderer, m_winScreen, NULL, &m_bg1.m_dst);
+		if (playerHealth == 7)
+		{
+			SDL_RenderCopy(m_pRenderer, m_goodWinScreen, NULL, &m_bg1.m_dst);
+		}
+		else
+		{
+			SDL_RenderCopy(m_pRenderer, m_winScreen, NULL, &m_bg1.m_dst);
+		}
 	}
 	else if (gameState == 1 || gameState == 2) // game is being played
 	{
@@ -759,13 +858,15 @@ void Engine::Render()
 		}
 
 		//Render item
-		m_pCollectible->Render();
+		m_pCollectible1->Render();
+		m_pCollectible2->Render();
+		m_pCollectible3->Render();
 		m_pGoal->Render();
 
 		
 
 		//SDL_RenderSetViewport(m_pRenderer, &m_Camera);
-		
+
 		// flip the sprites face to another side
 		if (KeyDown(SDL_SCANCODE_A) || KeyDown(SDL_SCANCODE_K))
 		{
@@ -792,6 +893,12 @@ void Engine::Render()
 			{
 				SDL_RenderCopy(m_pRenderer, m_levelOneText, NULL, &m_levelOneTextPosition);
 			}
+		}
+
+		//laser rendering
+		if (laserOnScreen)
+		{
+			LaserRender();
 		}
 	}
 	
@@ -898,8 +1005,12 @@ void Engine::LevelInitialize(int level)
 	switch (level)
 	{
 	case 1: //loading level 1 into the current level variables
+
+		playerHealth = 3; //makes sure that the player doesn't get bonus health if they beat the game with over 3 health
+
 		m_pCollectibleLevelOne = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 660, 300, 30, 30 });
 		m_pGoalLevelOne = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 940, 50, 75,50 });
+
 		//delete all the current obstacles
 		for (SDL_Rect obstacle : m_Obstacles)
 		{
@@ -918,16 +1029,23 @@ void Engine::LevelInitialize(int level)
 		for (SDL_Rect platform : m_Platforms)
 		{
 			m_Platforms[i] = *new SDL_Rect();
+			i++;
 		}
 		i = 0;
 		//add the level 1 platforms
-		for (SDL_Rect obstacle : m_PlatformsLevelOne)
+		for (SDL_Rect platform : m_PlatformsLevelOne)
 		{
-			m_Platforms[i] = obstacle;
+			m_Platforms[i] = platform;
 			i++;
 		}
 		m_pGoal = m_pGoalLevelOne; //set the goal location
-		m_pCollectible = m_pCollectibleLevelOne; //set the collectible location
+		m_pCollectible1 = m_pCollectibleLevelOne; //set the collectible location
+		m_pCollectible1->setIsCollected(false); //make it so you can collect the collectible again
+		m_pCollectible2->setIsCollected(true);
+		m_pCollectible3->setIsCollected(true);
+
+
+
 		//set the player's position to the spawn location
 
 		//deletes all enemies and recreate them
@@ -939,20 +1057,20 @@ void Engine::LevelInitialize(int level)
 		for (auto element : m_Platforms)
 		{
 			x++;
-			if (x != 5)
+			if (x < 5)
 			{
 				m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
 			}
 			m_flyingEnemyCreation.push_back(new FlyingEnemy(500, 500, 500, 50));
-
+			
 		}
 		m_player.SetX(levelOneSpawnX);
 		m_player.SetY(levelOneSpawnY);
 		break;
 	case 2:
-		m_pCollectibleLVL2_1 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 870, 300, 30, 30 });
-		m_pCollectibleLVL2_2 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 100, 300, 30, 30 });
-		m_pCollectibleLVL2_3 = new Collectible(m_pRenderer, m_pCupTexture, { 0,0,200,200 }, { 500, 300, 30, 30 });
+		timer = 0;
+		timer2 = 0;
+		timer3 = 0;
 		m_pGoalLvl2 = new Collectible(m_pRenderer, m_pgoal, { 0,0,465,135 }, { 435, 30, 150,75 });
 		for (SDL_Rect obstacle : m_Obstacles)
 		{
@@ -960,7 +1078,7 @@ void Engine::LevelInitialize(int level)
 			i++;
 		}
 		i = 0; //reset the value of i to 0 for the next loop
-		//add the level 1 obstacles
+		//add the level 2 obstacles
 		for (SDL_Rect obstacle : m_ObstaclesLevelTwo)
 		{
 			m_Obstacles[i] = obstacle;
@@ -973,15 +1091,22 @@ void Engine::LevelInitialize(int level)
 			m_Platforms[i] = *new SDL_Rect();
 		}
 		i = 0;
-		//add the level 1 platforms
+		//add the level 2 platforms
 		for (SDL_Rect obstacle : m_PlatformsLevelTwo)
 		{
 			m_Platforms[i] = obstacle;
 			i++;
 		}
 		m_pGoal = m_pGoalLvl2; //set the goal location
-		m_pCollectible = m_pCollectibleLVL2_1; //set the collectible location
+		m_pCollectible1 = m_pCollectibleLVL2_1; //set the collectible location
 		//set the player's position to the spawn location
+
+		m_pCollectible1 = m_pCollectibleLVL2_1; //set the collectible location
+		m_pCollectible1->setIsCollected(false); //make it so you can collect the collectible again
+		m_pCollectible2 = m_pCollectibleLVL2_2; //set the collectible location
+		m_pCollectible2->setIsCollected(false); //make it so you can collect the collectible again
+		m_pCollectible3 = m_pCollectibleLVL2_3; //set the collectible location
+		m_pCollectible3->setIsCollected(false); //make it so you can collect the collectible again
 
 		//deletes all enemies and recreate them
 		m_yellowEnemyCreation.clear();
@@ -994,14 +1119,65 @@ void Engine::LevelInitialize(int level)
 			x++;
 			if (x != 5)
 			{
-				m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
+				//for now I'm deleting all the grounded enemies from level 2 and making it purely a platforming level, since
+				//they don't function properly on moving platforms
+				//m_yellowEnemyCreation.push_back(new Enemy(element.x, element.y, element.x + element.w, element.y));
 			}
 			m_flyingEnemyCreation.push_back(new FlyingEnemy(500, 500, 500, 50));
 
 		}
 		m_player.SetX(levelOneSpawnX);
 		m_player.SetY(levelOneSpawnY);
+
 		break;
+	case 3:
+		//reset boss
+		bossDying = false;
+		m_bossHealth = 30;
+		m_bossRect = { 1200, 0, 350, 350 };
+		bossActive = false;
+
+		//change the music
+		Mix_PauseMusic();
+		Mix_PlayMusic(m_pMenuMusic, -1);
+
+		m_pGoal->setIsCollected(true);
+		//delete all the current obstacles
+		for (SDL_Rect obstacle : m_Obstacles)
+		{
+			m_Obstacles[i] = *new SDL_Rect();
+			i++;
+		}
+		i = 0; //reset the value of i to 0 for the next loop
+		//add the level 1 obstacles
+		for (SDL_Rect obstacle : m_ObstaclesLevelThree)
+		{
+			m_Obstacles[i] = obstacle;
+			i++;
+		}
+		i = 0;
+		//delete all the current platforms
+		for (SDL_Rect platform : m_Platforms)
+		{
+			m_Platforms[i] = *new SDL_Rect();
+			i++;
+		}
+		i = 0;
+
+		//deletes all enemies and recreate them
+		m_yellowEnemyCreation.clear();
+		m_yellowEnemyCreation.shrink_to_fit();
+		m_flyingEnemyCreation.clear();
+		m_flyingEnemyCreation.shrink_to_fit();
+
+		m_pCollectible1->setIsCollected(true); 
+		m_pCollectible2->setIsCollected(true);
+		m_pCollectible3->setIsCollected(true);
+
+		m_player.SetX(130);
+		m_player.SetY(250);
+		break;
+
 	default:
 		break;
 	}
@@ -1013,17 +1189,14 @@ void Engine::move_platforms()
 	timer2++;
 	timer3++;
 
-	if (timer >= 0 && timer <= 130)
+	if (timer > 0 && timer <= 210)
 	{
-		(m_Platforms[3].x--);
-		(m_Platforms[4].y++);
-	}
-	if (timer >= 0 && timer <= 130)
-	{
+		m_Platforms[3].x--;
+		m_Platforms[4].y++;
 		m_Platforms[2].x++;
-		(m_Platforms[5].y++);
+		m_Platforms[5].y++;
 	}
-	else
+	else if(timer > 230 && timer <= 440)
 	{
 		m_Platforms[3].x++;
 		m_Platforms[2].x--;
@@ -1031,11 +1204,11 @@ void Engine::move_platforms()
 		m_Platforms[5].y--;
 
 	}
-	if (timer > 260)
+	if (timer > 460)
 		timer = 0;
 
 
-	if (timer2 >= 0 && timer2 <= 700)
+	if (timer2 > 0 && timer2 <= 700)
 	{
 		m_Platforms[6].x++;
 	}
@@ -1049,12 +1222,144 @@ void Engine::move_platforms()
 	if (timer3 >= 0 && timer3 <= 50)
 	{
 		m_Platforms[7].y++;
+		m_Platforms[8].y++;
 	}
 	else
 	{
 		m_Platforms[7].y--;
+		m_Platforms[8].y--;
 	}
-	if (timer3 > 100)
+	if (timer3 >= 100)
 		timer3 = 0;
 
+}
+
+//boss stuff from here down
+void Engine::BossUpdate()
+{
+	//boss horizontal movement for the start of the fight
+	if (m_bossHealth > 0)
+	{
+		if (!bossActive && m_bossRect.x > 600)
+		{
+			m_bossRect.x--;
+		}
+		else
+		{
+			bossActive = true;
+			if (laserTimer < 40)
+			{
+				laserTimer++;
+				//render the laser because it's been fired recently
+				laserOnScreen = true;
+			}
+			else
+			{
+				laserOnScreen = false;
+			}
+			//bosses vertical movement
+			if (bossGoingDown)
+			{
+				m_bossRect.y++;
+				if (m_bossRect.y > 300)
+					//swap to up
+					bossGoingDown = false;
+			}
+			else
+			{
+				m_bossRect.y--;
+				if (m_bossRect.y < -100)
+					//swap to down
+					bossGoingDown = true;
+			}
+			for (int i = 0; i < 4; i++)
+			{
+				if (m_bossRect.y + m_bossRect.h - 70 == 300
+					|| m_bossRect.y + m_bossRect.h - 70 == 390
+					|| m_bossRect.y + m_bossRect.h - 70 == 480
+					|| m_bossRect.y + m_bossRect.h - 70 == 570)
+				{
+					laserTimer = 0;
+					//this should make the laser engulf the platform
+					laserY = m_bossRect.y + m_bossRect.h - 100;
+					m_laserRect = { -400, laserY, 1000, 64 };
+				}
+			}
+		}
+	}
+	else
+	{
+		bossDying = true;
+		m_bossRect.y += 2;
+		if (m_bossRect.y > 756)
+		{
+			gameState = 3;
+			Mix_PauseMusic();
+			Mix_VolumeChunk(m_pWin, 16);
+			Mix_VolumeChunk(m_pCheer, 16);
+			Mix_PlayChannel(-1, m_pWin, 0);
+			Mix_PlayChannel(-1, m_pCheer, 0);
+		}
+	}
+}
+
+void Engine::BossRender()
+{
+	bossFrameTimer++;
+	if (!bossDying)
+	{
+		if (bossFrameTimer >= 15)
+		{
+			bossFrame++;
+			if (bossFrame >= 4)
+			{
+				bossFrame = 0;
+			}
+			m_bossSrc.x = bossFrame * 552;
+			bossFrameTimer = 0;
+		}
+		SDL_RenderCopyEx(m_pRenderer, m_bossTexture, &m_bossSrc, &m_bossRect, 0, 0, m_bossFlip);
+		if (bossActive)
+		{
+			SDL_RenderFillRect(m_pRenderer, new SDL_Rect{ 100, 600, 22 * m_bossHealth, 60 });
+		}
+	}
+	else
+	{
+		SDL_RenderCopyEx(m_pRenderer, m_bossTexture, &m_bossSrc, &m_bossRect, 90, 0, m_bossFlip);
+	}
+}
+
+void Engine::LaserRender()
+{
+	if (level == 3)
+	{
+		cout << laserTimer << endl;
+		if (laserTimer < 25 && !bossDying)
+		{
+			if (m_laserFlip)
+			{
+				SDL_RenderCopyEx(m_pRenderer, m_laserSmallTexture, &m_laserSrc, &m_laserRect, 0, 0, SDL_FLIP_VERTICAL);
+
+			}
+			else
+			{
+				SDL_RenderCopyEx(m_pRenderer, m_laserSmallTexture, &m_laserSrc, &m_laserRect, 0, 0, SDL_FLIP_NONE);
+			}
+		}
+		else if (laserTimer > 25 && !bossDying)
+		{
+			if (m_laserFlip)
+			{
+				SDL_RenderCopyEx(m_pRenderer, m_laserBigTexture, &m_laserSrc, &m_laserRect, 0, 0, SDL_FLIP_VERTICAL);
+
+			}
+			else
+			{
+				SDL_RenderCopyEx(m_pRenderer, m_laserBigTexture, &m_laserSrc, &m_laserRect, 0, 0, SDL_FLIP_NONE);
+			}
+		}
+		//laser flips every frame
+		m_laserFlip = !m_laserFlip;
+	}
 }
