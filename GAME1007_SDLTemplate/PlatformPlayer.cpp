@@ -41,6 +41,10 @@ void PlatformPlayer::Update()
 
 	m_accelerationY += m_gravity;
 	m_velY += m_accelerationY;
+	if (m_velY > 10)
+	{
+		m_velY = 10;
+	}
 	m_dstRect.y += (int)m_velY;
 	// Reset acceleration. 
 	m_accelerationX = m_accelerationY = 0.0;
@@ -87,7 +91,6 @@ void PlatformPlayer::Update()
 		}
 	}
 
-	cout << m_isForgettable << endl;
 }
 
 void PlatformPlayer::Render(SDL_Texture* texture, PlatformPlayer player, SDL_RendererFlip flip)
