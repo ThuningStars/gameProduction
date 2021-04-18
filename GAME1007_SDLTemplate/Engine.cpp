@@ -987,7 +987,6 @@ void Engine::Clean()
 	SDL_DestroyTexture(m_gameOverScreen);
 	SDL_DestroyTexture(m_winScreen);
 	Mix_FreeChunk(m_pWin);
-	Mix_FreeChunk(m_pWin);
 	Mix_FreeChunk(m_pBullet);
 	Mix_FreeChunk(m_pCheer);
 	Mix_FreeChunk(m_pEnemy);
